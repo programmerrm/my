@@ -1,0 +1,1 @@
+import{j as t}from"./jsx-runtime-0DLF9kdB.js";const o=()=>[{title:"checkout"},{name:"description",content:"Welcome to Remix!"}];function c(){return t.jsx("section",{children:t.jsx("h2",{children:"checkout"})})}export{c as default,o as meta};

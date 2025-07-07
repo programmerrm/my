@@ -1,0 +1,72 @@
+version: "3.9"
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    networks:
+      - pngnet
+    ports:
+      - "3001:80"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+      - ./backend/.env
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - pngnet
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - pngnet
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - pngnet
+
+  nginx:
+    image: nginx:1.24-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - client
+      - backend
+    volumes:
+      - ./backend/static:/backend/static:ro
+      - ./backend/media:/backend/media:ro
+      - ./client/dist:/usr/share/nginx/html:ro
+      - ./nginx:/etc/nginx/conf.d:ro         # ✅ Changed to mount folder, not file
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - pngnet
+
+volumes:
+  postgres_data:
+
+networks:
+  pngnet:
+    driver: bridge
