@@ -7,11 +7,13 @@ export const Team: React.FC = () => {
     const { data } = useGetTeamQuery(undefined, { refetchOnMountOrArgChange: true });
 
     return (
-        <section className="relative top-0 left-0 right-0 py-5 lg:py-16 w-full">
+        <section className="relative top-0 left-0 right-0 py-5 lg:py-12 w-full">
             <div className="max-w-screen-2xl container mx-auto px-2.5 lg:px-5 w-full">
                 <div className="flex flex-col flex-wrap items-center justify-center w-full">
                     <div className="flex flex-col flex-wrap justify-center items-center w-full">
-                        <h2 className="text-4xl lg:text-5xl font-bold text-center">Team <br /> <span className="text-purple mt-1.5">Acknowledgements</span></h2>
+                        <h2 className="flex flex-col">
+                            Team <span className="text-purple"> Acknowledgements</span>
+                        </h2>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
                         {data?.data?.map((item: any) => {

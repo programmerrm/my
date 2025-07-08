@@ -5,6 +5,7 @@ export const popupSlice = createSlice({
   initialState: {
     channel: false,
     seemore: false,
+    footer_seemore: false,
   },
   reducers: {
     openChannel: (state) => {
@@ -19,6 +20,12 @@ export const popupSlice = createSlice({
     closeSeeMore: (state) => {
       state.seemore = false;
     },
+    openFooterSeeMore: (state) => {
+      state.footer_seemore = true;
+    },
+    closeFooterSeeMore: (state) => {
+      state.footer_seemore = false;
+    },
   },
 });
 
@@ -27,6 +34,8 @@ export const {
   closeChannel,
   openSeeMore,
   closeSeeMore,
+  openFooterSeeMore,
+  closeFooterSeeMore,
 } = popupSlice.actions;
 
 export default popupSlice.reducer;

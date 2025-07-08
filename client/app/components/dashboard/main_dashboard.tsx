@@ -1,4 +1,4 @@
-export const MAinDashboard = () => {
+export const MainDashboard = () => {
     return (
         <section className="py-[4.375rem]">
             <div className="container">
@@ -8,7 +8,7 @@ export const MAinDashboard = () => {
                     <div
                         className="bg-white rounded-[20px] p-5 md:p-10 md:py-[3.25rem] flex flex-col relative"
                     >
-                        {/* <ul
+                        <ul
                             className="flex flex-col sm:flex-row flex-wrap items-center w-full lg:w-fit mx-auto bg-section-title rounded-[1.625rem] p-[0.438rem]"
                         >
                             <li className="sm:flex-1/2 lg:flex-auto">
@@ -240,7 +240,7 @@ export const MAinDashboard = () => {
                                     </p>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
 
                         {/* <div className="my-5 p-2.5 rounded-2xl bg-[#f1f3f4]">
                             <div

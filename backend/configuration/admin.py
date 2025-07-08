@@ -8,7 +8,7 @@ class OfficialInfoAdmin(admin.ModelAdmin):
     list_display = ['Address', 'email', 'number']
 
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ['title', 'description', 'image']
+    list_display = ['title', 'description', 'url', 'image']
 
 class ServicesAdmin(admin.ModelAdmin):
     list_display = ['title', 'description', 'image']

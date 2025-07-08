@@ -1,17 +1,17 @@
 import { useSelector } from "react-redux";
-import { useCreateCheckoutSessionMutation } from "~/redux/features/payments/paymentsApi";
+import { useCreateCheckoutSessionMutation, useGetSubscriptionQuery } from "~/redux/features/payments/paymentsApi";
 import { RootState } from "~/redux/store";
 
 export default function Subscription() {
     const auth = useSelector((state: RootState) => state.auth);
-
+    const { data: subscriptionData } = useGetSubscriptionQuery(undefined, { refetchOnMountOrArgChange: true });
     const [createCheckoutSession, { isLoading }] = useCreateCheckoutSessionMutation();
 
     const handlePayment = async () => {
         try {
-            const res = await createCheckoutSession({}).unwrap(); // ✅ API call
+            const res = await createCheckoutSession({}).unwrap();
             if (res.url) {
-                window.location.href = res.url; // 🔁 Redirect to Stripe
+                window.location.href = res.url;
             } else {
                 alert("Something went wrong. No URL received.");
             }
@@ -56,12 +56,16 @@ export default function Subscription() {
                         <div className="flex flex-col gap-6">
                             <span>{auth?.user?.email}</span>
                             <button
-                                className="bg-blue-600 text-white py-2 px-6 rounded-xl hover:bg-blue-700 transition sm:text-xl"
+                                className="bg-blue-600 text-white py-2 px-6 rounded-xl hover:bg-blue-700 transition sm:text-xl cursor-pointer"
                                 type="button"
-                                disabled={isLoading}
-                                onClick={handlePayment}
+                                disabled={isLoading || subscriptionData?.success}
+                                onClick={() => {
+                                    if (!subscriptionData?.success) {
+                                        handlePayment();
+                                    }
+                                }}
                             >
-                                {isLoading ? "Processing..." : "PAY NOW"}
+                                {isLoading ? "Processing..." : `${subscriptionData?.success ? "ALL READY SUBSCRIBED" : "PAY NOW"}`}
                             </button>
                         </div>
                     </div>

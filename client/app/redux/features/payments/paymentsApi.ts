@@ -9,9 +9,13 @@ export const paymentsApi = apiSlice.injectEndpoints({
                 body: data,
             }),
         }),
+        getSubscription: builder.query({    
+            query: () => '/payments/subscription/',
+        }),
     }),
 });
 
 export const {
     useCreateCheckoutSessionMutation,
+    useGetSubscriptionQuery,
 } = paymentsApi;

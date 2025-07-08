@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@remix-run/react";
-import { Menu } from "~/utils/menu";
+import { Menu, NONAUTHMenu } from "~/utils/menu";
 import { ReactIcons } from "~/utils/reactIcons";
 import { useSelector } from "react-redux";
 import { RootState } from "~/redux/store";
@@ -12,19 +12,68 @@ export const MobileMenu: React.FC = () => {
         <div className="flex flex-col flex-wrap w-full gap-y-2.5 py-5">
             <nav className="flex flex-col flex-wrap py-1.5 px-2.5 rounded-xl text-white bg-section-title">
                 <ul className="flex flex-col flex-wrap items-center gap-y-2.5">
-                    {Menu?.map((item) => {
-                        return (
-                            <li key={item.id}>
-                                <Link
-                                    className="rounded-full py-1.5 px-3.5 flex flex-row flex-wrap items-center capitalize transition-all duration-500 hover:bg-gradient-to-r hover:from-[#384ef4] hover:to-[#b060ed]"
-                                    to={item.path ? item.path : "#"}
-                                >
-                                    {item.icon && item.icon}
-                                    {item.name}
-                                </Link>
-                            </li>
-                        );
-                    })}
+                    {auth?.tokens && auth.user ? (
+                        <>
+                            {Menu?.map((item) => {
+                                return (
+                                    <li key={item.id}>
+                                        <Link
+                                            className="rounded-full py-1.5 px-3.5 flex flex-row flex-wrap items-center capitalize transition-all duration-500 hover:bg-gradient-to-r hover:from-[#384ef4] hover:to-[#b060ed]"
+                                            to={item.path ? item.path : "#"}
+                                        >
+                                            {item.icon && item.icon}
+                                            {item.name}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
+                        </>
+                    ) : (
+                        <>
+                            {NONAUTHMenu?.map((item) => {
+                                return (
+                                    <li key={item.id}>
+                                        {item.name === "channels" ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    // Handle channel click
+                                                }}
+                                                className="rounded-full py-1.5 px-3.5 flex items-center capitalize transition-all duration-500 hover:bg-gradient-to-r hover:from-[#384ef4] hover:to-[#b060ed] cursor-pointer"
+                                            >
+                                                {item.icon && item.icon}
+                                                {item.name}
+                                            </button>
+                                        ) : item.path?.startsWith("/#") ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (item.path) {
+                                                        const element = document.getElementById(item.path.replace("/#", ""));
+                                                        if (element) {
+                                                            element.scrollIntoView({ behavior: "smooth" });
+                                                        }
+                                                    }
+                                                }}
+                                                className="rounded-full py-1.5 px-3.5 flex items-center capitalize transition-all duration-500 hover:bg-gradient-to-r hover:from-[#384ef4] hover:to-[#b060ed] cursor-pointer"
+                                            >
+                                                {item.icon && item.icon}
+                                                {item.name}
+                                            </button>
+                                        ) : (
+                                            <Link
+                                                to={item.path || "#"}
+                                                className="rounded-full py-1.5 px-3.5 flex items-center capitalize transition-all duration-500 hover:bg-gradient-to-r hover:from-[#384ef4] hover:to-[#b060ed]"
+                                            >
+                                                {item.icon && item.icon}
+                                                {item.name}
+                                            </Link>
+                                        )}
+                                    </li>
+                                );
+                            })}
+                        </>
+                    )}
                 </ul>
             </nav>
             {auth.tokens && auth.user ? (

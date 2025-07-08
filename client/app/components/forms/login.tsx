@@ -56,8 +56,8 @@ export const LoginForm: React.FC = () => {
                 </Field>
             </div>
             <div className="flex flex-row flex-wrap items-center justify-between w-full">
-                <Link to={'/register/'}>Create New Account?</Link>
-                <Link to={'/'}>Forget Password?</Link>
+                <Link className="!text-black/80" to={'/register/'}>Create New Account?</Link>
+                <Link className="!text-black/80" to={'/'}>Forget Password?</Link>
             </div>
             <div className="flex flex-col flex-wrap w-full">
                 <button

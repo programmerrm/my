@@ -34,7 +34,7 @@
 }
 @layer base {
    body {
-      @apply text-body-color font-nunito text-base font-normal leading-6;
+      @apply text-body-color font-nunito text-base font-normal leading-6 scroll-smooth;
    }
    h1,
    h2,

@@ -19,13 +19,19 @@ export const NONAUTHMenu: MenuPropsType[] = [
     {
         id: 3,
         name: "services",
-        path: "/services/",
+        path: "/#services",
         icon: undefined,
     },
     {
         id: 4,
         name: "about",
-        path: "/about/",
+        path: "/#about",
+        icon: undefined,
+    },
+    {
+        id: 5,
+        name: "e-commerce",
+        path: "/e-commerce/",
         icon: undefined,
     },
 ];
@@ -46,23 +52,29 @@ export const Menu: MenuPropsType[] = [
     {
         id: 3,
         name: "services",
-        path: "/",
+        path: "/#services",
         icon: undefined,
     },
     {
         id: 4,
         name: "about",
-        path: "/",
+        path: "/#about",
         icon: undefined,
     },
     {
         id: 5,
+        name: "e-commerce",
+        path: "/e-commerce/",
+        icon: undefined,
+    },
+    {
+        id: 6,
         name: "subscription",
         path: "/subscription/",
         icon: undefined,
     },
     {
-        id: 6,
+        id: 7,
         name: "dashboard",
         path: "/dashboard/",
         icon: undefined,

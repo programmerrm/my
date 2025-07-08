@@ -15,6 +15,7 @@ import { Header } from "./components/header/header";
 import { Channels } from "./components/popup/channels/channels";
 import { SeeMore } from "./components/popup/see-more/seemore";
 import { Footer } from "./components/footer/footer";
+import { FooterSeeMore } from "./components/popup/footer-see-more/footer-see-more";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -35,6 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="/bjollys-favicon.png" />
         <Meta />
         <Links />
       </head>
@@ -58,10 +60,12 @@ export default function App() {
 function AppContent() {
   const channelOpen = useSelector((state: RootState) => state.popup.channel);
   const seemoreOpen = useSelector((state: RootState) => state.popup.seemore);
+  const footerSeemoreOpen = useSelector((state: RootState) => state.popup.footer_seemore);
   return (
     <>
       {channelOpen && <Channels />}
       {seemoreOpen && <SeeMore />}
+      {footerSeemoreOpen && <FooterSeeMore />}
       <Header />
       <Notification />
       <Outlet />

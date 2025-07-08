@@ -5,10 +5,10 @@ import { MEDIA_URL } from "~/utils/api";
 export const About: React.FC = () => {
     const { data } = useGetAboutQuery(undefined, { refetchOnMountOrArgChange: true });
     return (
-        <section className="relative top-0 left-0 right-0 py-5 lg:py-16 w-full">
+        <section className="relative top-0 left-0 right-0 py-5 lg:py-12 w-full" id="about">
             <div className="max-w-screen-2xl container mx-auto px-2.5 lg:px-5 w-full">
                 <div className="py-[1.563rem] px-[0.938rem] sm:p-[3.125rem] rounded-[1.125rem] text-white  bg-gradient-to-r from-[#384ef4] to-[#b060ed]">
-                    <h2 className="text-white mb-5 text-center text-6xl font-bold">About</h2>
+                    <h2 className="text-white mb-5">About</h2>
                     <div className="flex flex-col-reverse gap-6 lg:gap-0 lg:flex-row items-center">
                         <div className="lg:w-[58.33%] lg:pr-3">
                             <h5 className="mb-[1.875rem] text-[1.188rem] md:text-[1.438rem]">
@@ -22,7 +22,7 @@ export const About: React.FC = () => {
                             >Enroll Now</a>
                         </div>
                         <div className="lg:w-[41.66%] lg:pl-3">
-                            <img className="rounded" src={`${MEDIA_URL}${data?.data?.image}`} alt="" />
+                            <img className="w-full h-full rounded" src={`${MEDIA_URL}${data?.data?.image}`} alt="" />
                         </div>
                     </div>
                 </div>

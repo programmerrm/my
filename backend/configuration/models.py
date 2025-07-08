@@ -109,6 +109,13 @@ class Team(models.Model):
         verbose_name=_('Team description'),
         help_text=_('Enter your team description...'),
     )
+    url = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True, 
+        verbose_name=_('Team URL'),
+        help_text=_('Enter your team URL...'),
+    )
 
     def __str__(self):
         return f'Team title is {self.title}'

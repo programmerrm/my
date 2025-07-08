@@ -2,11 +2,14 @@ import { Link } from "@remix-run/react";
 import { ReactIcons } from "~/utils/reactIcons";
 import { useGetFooterLogoQuery, useGetOfficialInfoQuery } from "~/redux/features/configuration/configurationApi";
 import { MEDIA_URL } from "~/utils/api";
+import { useDispatch } from "react-redux";
+import { openFooterSeeMore } from "~/redux/features/popup/popupSlice";
 
 export const Footer = () => {
     const { data: footerLogo } = useGetFooterLogoQuery(undefined, { refetchOnMountOrArgChange: true });
     const { data: officialInfo } = useGetOfficialInfoQuery(undefined, { refetchOnMountOrArgChange: true });
     const { RiFacebookCircleLine, FaInstagram, RiTwitterXFill, CiLinkedin } = ReactIcons;
+    const dispatch = useDispatch();
 
     return (
         <footer className="relative top-0 left-0 right-0 py-5 lg:py-10 w-full text-white bg-gradient-to-r from-[#384ef4] to-[#b060ed]">
@@ -23,16 +26,32 @@ export const Footer = () => {
                             <h4 className="text-lg font-medium uppercase">Resources</h4>
                             <ul className="flex flex-col flex-wrap gap-y-1.5 lg:gap-y-2.5 w-full text-sm lg:text-base font-normal">
                                 <li>
-                                    <Link to={'/'}>About</Link>
+                                    <button
+                                        onClick={() => {
+                                            const el = document.getElementById("about");
+                                            if (el) el.scrollIntoView({ behavior: "smooth" });
+                                        }}
+                                        className="text-left cursor-pointer"
+                                    >
+                                        About
+                                    </button>
                                 </li>
                                 <li>
-                                    <Link to={'/'}>Services</Link>
+                                    <button
+                                        onClick={() => {
+                                            const el = document.getElementById("services");
+                                            if (el) el.scrollIntoView({ behavior: "smooth" });
+                                        }}
+                                        className="text-left cursor-pointer"
+                                    >
+                                        Services
+                                    </button>
                                 </li>
                                 <li>
-                                    <Link to={'/'}>Terms & conditions</Link>
+                                    <Link to={'/terms-and-conditions/'}>Terms & conditions</Link>
                                 </li>
                                 <li>
-                                    <Link to={'/'}>Privacy Policy</Link>
+                                    <Link to={'/privacy-policy/'}>Privacy Policy</Link>
                                 </li>
                             </ul>
                         </div>
@@ -79,8 +98,8 @@ export const Footer = () => {
                             <h4 className="text-sm lg:text-lg font-medium text-center">LEGAL DISCLAIMER & TERMS OF USE/CONDITIONS</h4>
                             <span className="text-sm lg:text-base font-normal">Last Updated: 20.03.2025</span>
                         </div>
-                        <div className="flex flex-col flex-wrap items-center justify-center w-full lg:w-[60%]">
-                            <p className="text-xs lg:text-sm font-normal text-justify lg:text-center">Welcome to www.waqarzaka.net (the "Website"). By accessing or using this Website, you agree to the following disclaimers, terms, and policies. If you do not agree with any part of this disclosure, please discontinue use immediately. <span className="underline">See More</span></p>
+                        <div className="flex flex-col flex-wrap items-center justify-center w-full lg:w-[65%]">
+                            <p className="text-xs lg:text-sm font-normal text-justify lg:text-center">Welcome to www.waqarzaka.net (the "Website"). By accessing or using this Website, you agree to the following disclaimers, terms, and policies. If you do not agree with any part of this disclosure, please discontinue use immediately. <span className="underline cursor-pointer" onClick={() => dispatch(openFooterSeeMore())}>See More</span></p>
                         </div>
                     </div>
                 </div>

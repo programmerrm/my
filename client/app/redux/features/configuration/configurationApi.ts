@@ -2,6 +2,9 @@ import { apiSlice } from "../api/apiSlice";
 
 export const configurationApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
+        getLogo: builder.query({
+            query: () => '/configuration/logo/',
+        }),
         getFooterLogo: builder.query({
             query: () => '/configuration/footer-logo/',
         }),
@@ -27,6 +30,7 @@ export const configurationApi = apiSlice.injectEndpoints({
 });
 
 export const {
+    useGetLogoQuery,
     useGetFooterLogoQuery,
     useGetBannerQuery,
     useGetTeamQuery,

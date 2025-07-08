@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import ObjectDoesNotExist
 
-class Payment(APIView):
+class Subscription(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -13,12 +13,19 @@ class Payment(APIView):
         try:
             subscription = user.subscription
         except ObjectDoesNotExist:
-            return Response({"error": "No active subscription found."}, status=404)
+            return Response({
+                'success': False,
+                "message": "No active subscription found."
+            }, status=200)
 
         if subscription.is_expired():
-            return Response({"error": "Your subscription has expired."}, status=400)
+            return Response({
+                'success': False,
+                "message": "Your subscription has expired."
+            }, status=200)
 
         return Response({
+            'success': True,
             "status": subscription.status,
             "next_billing_date": subscription.next_billing_date,
             "is_recurring": subscription.is_recurring,

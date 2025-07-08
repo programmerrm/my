@@ -14,21 +14,21 @@ export const Banner: React.FC = () => {
         dispatch(openSeeMore());
     };
     return (
-        <section className="relative top-0 left-0 right-0 py-5 lg:py-16 w-full">
+        <section className="relative top-0 left-0 right-0 py-5 lg:py-12 w-full">
             <div className="max-w-screen-2xl container mx-auto px-2.5 lg:px-5 w-full">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center justify-center w-full">
                     <div className="flex flex-col flex-wrap w-full">
 
                         <h3 className="uppercase text-purple text-2xl font-semibold">{data?.data?.sub_title}</h3>
 
-                        <h1 className="mb-5 text-purple text-6xl font-bold mt-2.5">{data?.data?.title}</h1>
+                        <h1 className="mb-5 text-purple text-4xl lg:text-6xl font-bold mt-2.5">{data?.data?.title}</h1>
 
                         <div className="space-y-4 mb-4 text-body-color">
-                            <p>{data?.data?.description}</p>
+                            <p className="text-justify">{data?.data?.description}</p>
                         </div>
 
                         <div className="mb-5">
-                            <button className="text-purple underline" type="button" onClick={handleOpen}>See More</button>
+                            <button className="text-purple underline cursor-pointer" type="button" onClick={handleOpen}>See More</button>
                         </div>
 
                         <div className="flex gap-5 flex-wrap mb-10">
