@@ -1,10 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
-env/
 venv/
-.env
-.env.*
 .venv/
 
 # Node
