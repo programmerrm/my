@@ -5,37 +5,38 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import ObjectDoesNotExist
 
-class Subscription(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        try:
-            subscription = user.subscription
-        except ObjectDoesNotExist:
-            return Response({
-                'success': False,
-                "message": "No active subscription found."
-            }, status=200)
-
-        if subscription.is_expired():
-            return Response({
-                'success': False,
-                "message": "Your subscription has expired."
-            }, status=200)
-
-        return Response({
-            'success': True,
-            "status": subscription.status,
-            "next_billing_date": subscription.next_billing_date,
-            "is_recurring": subscription.is_recurring,
-            "stripe_subscription_id": subscription.stripe_subscription_id,
-            "stripe_customer_id": subscription.stripe_customer_id
-        })
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-class CreateStripeCheckoutSession(APIView):
+class CreateCryptoStripeCheckoutSession(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': 1000,
+                        'product_data': {
+                            'name': 'Crypto Lifetime Access',
+                        },
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=f"{settings.FRONTEND_DOMAIN}/payment/success/",
+            cancel_url=f"{settings.FRONTEND_DOMAIN}/payment/cancel/",
+            customer_email=request.user.email,
+            metadata={
+                "user_id": request.user.id,
+                "type": "lifetime"
+            }
+        )
+        return Response({'url': checkout_session.url})
+
+class CreateEcommerceStripeCheckoutSession(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -50,19 +51,19 @@ class CreateStripeCheckoutSession(APIView):
                             'interval': 'month'
                         },
                         'product_data': {
-                            'name': 'Monthly Crypto Subscription',
+                            'name': 'E-commerce Monthly Access',
                         },
                     },
                     'quantity': 1,
                 },
             ],
             mode='subscription',
-            success_url=f"{settings.YOUR_FRONTEND_DOMAIN}/",
-            cancel_url=f"{settings.YOUR_FRONTEND_DOMAIN}/payment/cancel/",
+            success_url=f"{settings.FRONTEND_DOMAIN}/payment/success/",
+            cancel_url=f"{settings.FRONTEND_DOMAIN}/payment/cancel/",
             customer_email=request.user.email,
             metadata={
-                "user_id": request.user.id
+                "user_id": request.user.id,
+                "type": "recurring"
             }
         )
-
         return Response({'url': checkout_session.url})

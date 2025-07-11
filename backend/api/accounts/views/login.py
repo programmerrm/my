@@ -15,6 +15,7 @@ class LoginView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data, context={'request': request})
+        print('request data : ', request.data)
         try:
             if serializer.is_valid():
                 user = serializer.validated_data['user']

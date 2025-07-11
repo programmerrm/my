@@ -117,10 +117,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 'DEFAULT_THROTTLE_CLASSES': [
-    #     'rest_framework.throttling.AnonRateThrottle',
-    #     'rest_framework.throttling.UserRateThrottle',
-    # ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
@@ -147,25 +143,17 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "id",
 }
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://api.bjollys.net',
-    'https://www.bjollys.net',
-    'https://bjollys.net',
-]
-
 CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://localhost:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
 CELERY_TIMEZONE = 'UTC'
-STRIPE_SECRET_KEY='sk_test_51RiC5F4JBc46MP7KkjtQPakuRlVLcqbABPwuzSfLZsfcPvqHnosSdNC6mgwjntbi6mdSq182budULngkUZDUcr1E006LcToGOj'
-STRIPE_PUBLISHABLE_KEY='pk_test_51RiC5F4JBc46MP7KUE5r2lWkqY00oS0jMONZQaoQMnMpvAos89PO3LYTBp3HMsEeP8WdtM7xj43GSfhK6Pl2MYr4004znH1MUG'
-STRIPE_WEBHOOK_SECRET='whsec_N90lhRdMmDr47iWCeBJYZUCYbu2JUajg'
+CELERY_TASK_ALWAYS_EAGER = False
 
-# STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
-# STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='') 
-# STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='')
-YOUR_DOMAIN = env('YOUR_DOMAIN', default='')
-YOUR_FRONTEND_DOMAIN = env('YOUR_FRONTEND_DOMAIN', default='')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='') 
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='')
+DOMAIN = env('DOMAIN', default='')
+FRONTEND_DOMAIN = env('FRONTEND_DOMAIN', default='')
 
 JAZZMIN_SETTING = JAZZMIN_SETTINGS

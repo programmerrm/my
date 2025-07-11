@@ -31,3 +31,4 @@ class RegisterViewSet(viewsets.ViewSet):
                 'message': 'Server error',
                 'errors': str(e),
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        

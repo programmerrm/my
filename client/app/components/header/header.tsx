@@ -101,7 +101,7 @@ export const Header = () => {
                 <IoMdNotifications className="text-2xl" />
               </Link>
               <div className="relative">
-                <button className="py-[0.688rem] px-[2.125rem] pr-6 rounded-[1.875rem] uppercase text-white border border-purple bg-purple transition-all duration-[0.3s] flex items-center gap-2 text-base leading-normal font-normal cursor-pointer focus:bg-[#0000] xl:hover:bg-[#0000] xl:hover:border-[#8c8888] focus:border-[#8c8888] xl:hover:text-black focus:text-black xl:hover:rounded-tl-[1.875rem] focus:rounded-tl-[1.875rem] xl:hover:rounded-tr-[1.875rem] focus:rounded-tr-[1.875rem] xl:hover:rounded-bl-none focus:rounded-bl-none xl:hover:rounded-br-none focus:rounded-br-none group font-nunito">
+                <button className="py-[0.688rem] px-[2.125rem] pr-6 rounded-[1.875rem] uppercase text-white border border-purple bg-purple transition-all duration-[0.3s] flex items-center text-base leading-normal font-normal cursor-pointer focus:bg-[#0000] xl:hover:bg-[#0000] xl:hover:border-[#8c8888] focus:border-[#8c8888] xl:hover:text-black focus:text-black xl:hover:rounded-tl-[1.875rem] focus:rounded-tl-[1.875rem] xl:hover:rounded-tr-[1.875rem] focus:rounded-tr-[1.875rem] xl:hover:rounded-bl-none focus:rounded-bl-none xl:hover:rounded-br-none focus:rounded-br-none group font-nunito">
                   {auth?.user?.name}
                   <MdOutlineKeyboardArrowDown />
                   <div className="bg-[#0000] border border-[#8c8888] rounded-br-[1.875rem] rounded-bl-[1.875rem] text-[#000] left-0 p-2 absolute text-center top-[2.975rem] w-full hidden group-focus:block xl:group-hover:block">
@@ -118,7 +118,7 @@ export const Header = () => {
                       Support
                     </Link>
                     <button
-                      className="text-section-title text-[0.688rem] w-full uppercase block hover:text-purple py-0.5"
+                      className="text-section-title text-[0.688rem] w-full uppercase block hover:text-purple py-0.5 cursor-pointer"
                       type="button"
                       onClick={handleLogout}
                     >
@@ -137,7 +137,7 @@ export const Header = () => {
                 login
               </Link>
               <Link
-                className="py-3 px-10 border rounded-full uppercase text-white bg-gradient-to-r from-[#384ef4] to-[#b060ed] "
+                className="py-3 px-10 border rounded-full uppercase text-white bg-gradient-to-r from-[#384ef4] to-[#b060ed]"
                 to={"/register/"}
               >
                 sign up

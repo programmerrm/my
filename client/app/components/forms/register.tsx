@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Field } from "../field/field";
 import { ReactIcons } from "~/utils/reactIcons";
@@ -9,13 +9,13 @@ import { toast } from "react-toastify";
 
 export const RegisterForm: React.FC = () => {
     const navigate = useNavigate();
-    const [addRegister, { isLoading, isError, isSuccess }] =
-        useAddRegisterMutation();
+    const [addRegister, { isLoading }] = useAddRegisterMutation();
     const [isShow, setIsShow] = useState({
         password: false,
         confirm_password: false,
     });
     const [hovered, setHovered] = useState(false);
+    const [publicIp, setPublicIp] = useState<string>("");
 
     const {
         register,
@@ -26,26 +26,31 @@ export const RegisterForm: React.FC = () => {
 
     const { IoMdEyeOff, IoEye } = ReactIcons;
 
+    // Fetch user's public IP on mount
+    useEffect(() => {
+        fetch("https://api.ipify.org?format=json")
+            .then((res) => res.json())
+            .then((data) => setPublicIp(data.ip))
+            .catch(() => setPublicIp(""));
+    }, []);
+
     const togglePasswordVisibility = (field: "password" | "confirm_password") => {
         setIsShow((prev) => ({ ...prev, [field]: !prev[field] }));
     };
 
     const onSubmitForm = async (formData: RegisterPropsType) => {
         try {
-            await addRegister(formData).unwrap();
-            toast.success('Registered successfully!');
+            // Attach publicIp as local_ip
+            const dataWithIp = { ...formData, local_ip: publicIp || undefined };
+
+            await addRegister(dataWithIp).unwrap();
+            toast.success("Registered successfully!");
             reset();
-            navigate('/login/');
+            navigate("/login/");
         } catch (err: any) {
-            if (err?.data?.message) {
-                toast.error(err.data.message);
-            } else if (err?.message) {
-                toast.error(err.message); 
-            } else {
-                toast.error("Something went wrong during registration.");
-            }
+            toast.error("Something went wrong during registration.");
         }
-    }
+    };
 
     return (
         <form
@@ -63,6 +68,7 @@ export const RegisterForm: React.FC = () => {
                     />
                 </Field>
             </div>
+
             <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                 <Field label="" error={errors.email}>
                     <input
@@ -74,6 +80,7 @@ export const RegisterForm: React.FC = () => {
                     />
                 </Field>
             </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full">
                 <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                     <Field label="" error={errors.number}>
@@ -86,6 +93,7 @@ export const RegisterForm: React.FC = () => {
                         />
                     </Field>
                 </div>
+
                 <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                     <Field label="" error={errors.country}>
                         <input
@@ -98,6 +106,7 @@ export const RegisterForm: React.FC = () => {
                     </Field>
                 </div>
             </div>
+
             <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                 <Field label="" error={errors.date_of_birth}>
                     <input
@@ -110,6 +119,7 @@ export const RegisterForm: React.FC = () => {
                     />
                 </Field>
             </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full">
                 <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                     <Field label="" error={errors.password}>
@@ -135,6 +145,7 @@ export const RegisterForm: React.FC = () => {
                         </div>
                     </Field>
                 </div>
+
                 <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                     <Field label="" error={errors.confirm_password}>
                         <div className="relative w-full">
@@ -162,6 +173,7 @@ export const RegisterForm: React.FC = () => {
                     </Field>
                 </div>
             </div>
+
             <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                 <Field label="" error={errors.signature}>
                     <input
@@ -188,6 +200,7 @@ export const RegisterForm: React.FC = () => {
                         </select>
                     </Field>
                 </div>
+
                 <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                     <Field label="" error={errors.role}>
                         <select
@@ -201,6 +214,7 @@ export const RegisterForm: React.FC = () => {
                     </Field>
                 </div>
             </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full">
                 <div className="flex flex-col flex-wrap gap-y-2.5 justify-center items-center lg:justify-normal lg:items-start w-full">
                     <Field label="" error={errors.terms_accepted}>
@@ -222,6 +236,7 @@ export const RegisterForm: React.FC = () => {
                         </div>
                     </Field>
                 </div>
+
                 <div className="flex flex-col flex-wrap gap-y-2.5 w-full">
                     <div className="flex flex-col justify-center lg:justify-end items-center lg:items-end">
                         <Link className="text-blue-600 text-sm lg:text-base underline" to="/login/">
@@ -230,15 +245,17 @@ export const RegisterForm: React.FC = () => {
                     </div>
                 </div>
             </div>
+
             <div className="flex flex-col flex-wrap w-full">
                 <button
                     onMouseEnter={() => setHovered(true)}
                     onMouseLeave={() => setHovered(false)}
                     className={`text-base font-medium py-4 px-5 rounded-md uppercase transition-all duration-500 border ${hovered
-                        ? "bg-transparent text-black border-black"
-                        : "bg-gradient-to-r from-[#384ef4] to-[#b060ed] text-white"
+                            ? "bg-transparent text-black border-black"
+                            : "bg-gradient-to-r from-[#384ef4] to-[#b060ed] text-white"
                         }`}
                     type="submit"
+                    disabled={isLoading}
                 >
                     {isLoading ? "Submitting..." : "Submit"}
                 </button>

@@ -34,6 +34,12 @@ export const NONAUTHMenu: MenuPropsType[] = [
         path: "/e-commerce/",
         icon: undefined,
     },
+    {
+        id: 6,
+        name: "Crypto",
+        path: "/crypto/subscription/",
+        icon: undefined,
+    },
 ];
 
 export const Menu: MenuPropsType[] = [
@@ -68,13 +74,19 @@ export const Menu: MenuPropsType[] = [
         icon: undefined,
     },
     {
-        id: 6,
+        id: 7,
+        name: "Crypto",
+        path: "/crypto/subscription/",
+        icon: undefined,
+    },
+    {
+        id: 8,
         name: "subscription",
         path: "/subscription/",
         icon: undefined,
     },
     {
-        id: 7,
+        id: 9,
         name: "dashboard",
         path: "/dashboard/",
         icon: undefined,

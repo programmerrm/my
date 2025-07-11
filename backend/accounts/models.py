@@ -94,7 +94,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_('Role'),
         help_text=_('Enter your role...'),
     )
-
+    local_ip = models.GenericIPAddressField(unique=True, null=True, blank=True)
     terms_accepted = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -131,17 +131,3 @@ class User(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         from accounts.validators.single_admin import VALIDATE_SINGLE_ADMIN
         VALIDATE_SINGLE_ADMIN(self)
-
-class ActiveSession(models.Model):
-    user = models.OneToOneField(
-        User, 
-        on_delete=models.CASCADE, 
-        related_name='active_session'
-    )
-    ip_address = models.GenericIPAddressField(unique=True)
-    user_agent = models.TextField()
-    last_login = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.user.email} - {self.ip_address}"
-    

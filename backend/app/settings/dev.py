@@ -15,7 +15,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1:8000',
     'api.bjollys.net',
     'bjollys.net',
-    'de1f-118-179-170-140.ngrok-free.app',
+    '7572b052ccf2.ngrok-free.app',
 ]
 
 SECRET_KEY = 'django-insecure-4%gu)qu8u+wms*+#psj)c$pc^l!u3ntj@osqpb!2l!t+qo+x55'

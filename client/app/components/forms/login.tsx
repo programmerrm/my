@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Field } from "../field/field";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "@remix-run/react";
@@ -12,6 +12,7 @@ export const LoginForm: React.FC = () => {
     const navigate = useNavigate();
     const [isShow, setIsShow] = useState<boolean>(false);
     const [hovered, setHovered] = useState<boolean>(false);
+    const [publicIp, setPublicIp] = useState<string>("");
     const {
         register,
         handleSubmit,
@@ -19,9 +20,19 @@ export const LoginForm: React.FC = () => {
         formState: { errors },
     } = useForm<LoginPropsType>();
     const { IoEye, IoMdEyeOff } = ReactIcons;
+
+    // Fetch user's public IP on mount
+    useEffect(() => {
+        fetch("https://api.ipify.org?format=json")
+            .then((res) => res.json())
+            .then((data) => setPublicIp(data.ip))
+            .catch(() => setPublicIp(""));
+    }, []);
+
     const onSubmitForm = async (formData: LoginPropsType) => {
         try {
-            await addLogin(formData).unwrap();
+            const dataWithIp = { ...formData, local_ip: publicIp || undefined };
+            await addLogin(dataWithIp).unwrap();
             toast.success("Login successfully");
             navigate("/");
             reset();
@@ -56,8 +67,8 @@ export const LoginForm: React.FC = () => {
                 </Field>
             </div>
             <div className="flex flex-row flex-wrap items-center justify-between w-full">
-                <Link className="!text-black/80" to={'/register/'}>Create New Account?</Link>
-                <Link className="!text-black/80" to={'/'}>Forget Password?</Link>
+                <Link className="text-blue-600 underline" to={'/register/'}>Create New Account?</Link>
+                <Link className="text-blue-600 underline" to={'/'}>Forget Password?</Link>
             </div>
             <div className="flex flex-col flex-wrap w-full">
                 <button

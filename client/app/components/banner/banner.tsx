@@ -14,7 +14,7 @@ export const Banner: React.FC = () => {
         dispatch(openSeeMore());
     };
     return (
-        <section className="relative top-0 left-0 right-0 py-5 lg:py-12 w-full">
+        <section className="py-5 lg:py-12 w-full">
             <div className="max-w-screen-2xl container mx-auto px-2.5 lg:px-5 w-full">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center justify-center w-full">
                     <div className="flex flex-col flex-wrap w-full">

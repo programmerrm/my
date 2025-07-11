@@ -13,7 +13,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name', 'email', 'number', 'password', 'confirm_password', 'gender', 'date_of_birth', 'country', 'signature', 'role', 'terms_accepted']
+        fields = ['name', 'email', 'number', 'password', 'confirm_password', 'gender', 'date_of_birth', 'country', 'signature', 'role', 'local_ip', 'terms_accepted']
 
     def validate_terms_accepted(self, value):
         return VALIDATE_TERMS_ACCEPTED(value)

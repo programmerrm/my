@@ -8,10 +8,12 @@ User = get_user_model()
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+    local_ip = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
+        local_ip = attrs.get('local_ip')
 
         if not email:
             raise serializers.ValidationError({
@@ -34,6 +36,9 @@ class LoginSerializer(serializers.Serializer):
                 raise serializers.ValidationError({
                     'password': _('Incorrect password')
                 })
+        
+        if user.local_ip != local_ip:
+            raise serializers.ValidationError({'local_ip': _('Local IP does not match')})
 
         if not user.is_active:
             raise serializers.ValidationError({

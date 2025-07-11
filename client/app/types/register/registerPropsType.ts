@@ -10,4 +10,5 @@ export interface RegisterPropsType {
     signature: string;
     terms_accepted: boolean;
     role: "crypto" | "e-commerce";
+    local_ip?: string;
 }
