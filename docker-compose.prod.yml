@@ -54,7 +54,7 @@ services:
       - client
       - backend
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # ✅ ফাইল ফাইলের উপর
       - ./client/dist:/usr/share/nginx/html:ro
       - ./backend/static:/backend/static:ro
       - ./backend/media:/backend/media:ro
