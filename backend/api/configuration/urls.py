@@ -7,6 +7,10 @@ from api.configuration.views.banner import BannerViewSet
 from api.configuration.views.services import ServicesViewSet
 from api.configuration.views.team import TeamViewSet
 from api.configuration.views.why_choose_us import WhyChooseUsViewSet
+from api.configuration.views.crypto_trades import CryptoTradesView
+from api.configuration.views.stock_commodities_trades import StockCommoditiesTradesView
+from api.configuration.views.market_updates import MarketUpdatesView
+from api.configuration.views.education import EducationView
 
 urlpatterns = [
     path(
@@ -48,5 +52,25 @@ urlpatterns = [
         'why-choose-us/',
         WhyChooseUsViewSet.as_view({ 'get': 'list' }),
         name='why-choose-us',
+    ),
+    path(
+        'crypto-trades/',
+        CryptoTradesView.as_view({ 'get': 'list' }),
+        name='CryptoTrades'
+    ),
+    path(
+        'stock-commodities-trades/',
+        StockCommoditiesTradesView.as_view({ 'get': 'list' }),
+        name='stock_commodities_trades',
+    ),
+    path(
+        'market-updates/',
+        MarketUpdatesView.as_view({ 'get': 'list' }),
+        name='market_updates',
+    ),
+    path(
+        'education/',
+        EducationView.as_view({ 'get': 'list' }),
+        name='education',
     ),
 ]

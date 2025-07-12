@@ -26,6 +26,18 @@ export const configurationApi = apiSlice.injectEndpoints({
         getAbout: builder.query({
             query: () => '/configuration/about/',
         }),
+        getCryptoTrades: builder.query({
+            query: () => '/configuration/crypto-trades/',
+        }),
+        getStockCommoditiesTrades: builder.query({
+            query: () => '/configuration/stock-commodities-trades/',
+        }),
+        getMarketUpdates: builder.query({
+            query: () => 'configuration/market-updates/',
+        }),
+        getEducation: builder.query({
+            query: () => '/configuration/education/',
+        }),
     }),
 });
 
@@ -38,4 +50,8 @@ export const {
     useGetServiceQuery,
     useGetOfficialInfoQuery,
     useGetAboutQuery,
+    useGetCryptoTradesQuery,
+    useGetStockCommoditiesTradesQuery,
+    useGetMarketUpdatesQuery,
+    useGetEducationQuery,
 } = configurationApi;
