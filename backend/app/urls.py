@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,6 +26,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 BASE_API = 'api/v1'
 
 urlpatterns = [
+    path('', lambda request: JsonResponse({"message": "Welcome to the Bijolis API 🚀"})),
     path('admin/', admin.site.urls),
     path(f'{BASE_API}/accounts/', include('api.accounts.urls')),
     path(f'{BASE_API}/configuration/', include('api.configuration.urls')),

@@ -15,7 +15,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1:8000',
     'api.bjollys.net',
     'bjollys.net',
-    '7572b052ccf2.ngrok-free.app',
+    '80bec6a05d40.ngrok-free.app',
 ]
 
 SECRET_KEY = 'django-insecure-4%gu)qu8u+wms*+#psj)c$pc^l!u3ntj@osqpb!2l!t+qo+x55'
@@ -40,6 +40,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://api.bjollys.net',
     'https://www.bjollys.net',
     'https://bjollys.net',
+    'https://80bec6a05d40.ngrok-free.ap'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -49,6 +50,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://api.bjollys.net',
     'https://www.bjollys.net',
     'https://bjollys.net',
+    'https://80bec6a05d40.ngrok-free.app'
 ]
 
 REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'

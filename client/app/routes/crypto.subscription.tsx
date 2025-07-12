@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
-import { useCreateCheckoutSessionMutation, useGetSubscriptionQuery } from "~/redux/features/payments/paymentsApi";
+import { useCreateCryptoCheckoutSessionMutation, useGetSubscriptionQuery } from "~/redux/features/payments/paymentsApi";
 import { RootState } from "~/redux/store";
 
 export default function CryptoSubscription() {
     const auth = useSelector((state: RootState) => state.auth);
         const { data: subscriptionData } = useGetSubscriptionQuery(undefined, { refetchOnMountOrArgChange: true });
-        const [createCheckoutSession, { isLoading }] = useCreateCheckoutSessionMutation();
+        const [createCheckoutSession, { isLoading }] = useCreateCryptoCheckoutSessionMutation();
     
         const handlePayment = async () => {
             try {
@@ -64,7 +64,7 @@ export default function CryptoSubscription() {
                                     }
                                 }}
                             >
-                                {isLoading ? "Processing..." : `${subscriptionData?.success ? "ALL READY SUBSCRIBED" : "PAY NOW"}`}
+                                {isLoading ? "Processing..." : `${subscriptionData?.subscription_type === 'crypto' && subscriptionData?.success ? "ALL READY SUBSCRIBED" : "PAY NOW"}`}
                             </button>
                         </div>
                     </div>

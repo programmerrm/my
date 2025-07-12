@@ -33,7 +33,7 @@ def stripe_webhook(request):
 
     logger.info(f"✅ Stripe Event Received: {event['type']}")
 
-    # Handle Checkout Session Completed (one-time or first-time subscription)
+    # Handle Checkout Session Completed
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         metadata = session.get('metadata', {})
@@ -57,14 +57,13 @@ def stripe_webhook(request):
             logger.info(f"ℹ️ Payment already exists for intent: {payment_intent_id}")
             return HttpResponse(status=200)
 
-        # Try to retrieve amount and currency from PaymentIntent
+        # Retrieve amount and currency
         try:
             if payment_intent_id:
                 payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
                 amount = payment_intent['amount_received'] / 100
                 currency = payment_intent['currency'].upper()
             else:
-                # fallback for one-time checkout with no payment intent
                 amount = session.get('amount_total', 0) / 100
                 currency = session.get('currency', 'USD').upper()
         except Exception as e:
@@ -83,6 +82,7 @@ def stripe_webhook(request):
 
         # Create or update subscription
         subscription, _ = Subscription.objects.get_or_create(user=user)
+        subscription.subscription_type = subscription_type
 
         if payment_type == 'lifetime':
             subscription.status = 'active'
@@ -91,7 +91,7 @@ def stripe_webhook(request):
             subscription.stripe_subscription_id = None
             subscription.stripe_customer_id = customer_id
             subscription.save()
-            logger.info(f"✅ Lifetime access activated for user {user.name} (ID: {user.id})")
+            logger.info(f"✅ Lifetime {subscription_type} access activated for user {user.name} (ID: {user.id})")
 
         elif payment_type == 'recurring':
             subscription.activate(
@@ -99,14 +99,15 @@ def stripe_webhook(request):
                 stripe_customer_id=customer_id,
             )
             subscription.is_recurring = True
+            subscription.subscription_type = subscription_type
             subscription.save()
-            logger.info(f"✅ Recurring subscription activated for user {user.name} (ID: {user.id})")
+            logger.info(f"✅ Recurring {subscription_type} subscription activated for user {user.name} (ID: {user.id})")
 
         else:
             logger.warning(f"❗ Unknown payment type received: {payment_type}")
             return JsonResponse({'error': 'Unknown payment type'}, status=400)
 
-    # Handle recurring payments (monthly)
+    # Handle recurring payments (invoice paid)
     elif event['type'] == 'invoice.paid':
         invoice = event['data']['object']
         customer_id = invoice.get('customer')
@@ -116,7 +117,6 @@ def stripe_webhook(request):
         currency = invoice.get('currency', 'USD').upper()
 
         try:
-            # Try to find user by subscription
             subscription = Subscription.objects.get(stripe_subscription_id=subscription_id)
             user = subscription.user
         except Subscription.DoesNotExist:

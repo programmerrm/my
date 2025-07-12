@@ -2,9 +2,16 @@ import { apiSlice } from "../api/apiSlice";
 
 export const paymentsApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        createCheckoutSession: builder.mutation({
+        createCryptoCheckoutSession: builder.mutation({
             query: (data) => ({
                 url: "/payments/create-crypto-checkout-session/",
+                method: "POST",
+                body: data,
+            }),
+        }),
+        createEcommerceCheckoutSession: builder.mutation({
+            query: (data) => ({
+                url: "/payments/create-e-commerce-checkout-session/",
                 method: "POST",
                 body: data,
             }),
@@ -16,6 +23,7 @@ export const paymentsApi = apiSlice.injectEndpoints({
 });
 
 export const {
-    useCreateCheckoutSessionMutation,
+    useCreateCryptoCheckoutSessionMutation,
+    useCreateEcommerceCheckoutSessionMutation,
     useGetSubscriptionQuery,
 } = paymentsApi;

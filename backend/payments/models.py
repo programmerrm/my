@@ -5,6 +5,11 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+SUBSCRIPTION_TYPE_CHOICES = [
+    ('crypto', 'Crypto'),
+    ('e-commerce', 'E-Commerce'),
+]
+
 class Subscription(models.Model):
     STATUS_CHOICES = [
         ('active', 'Active'),
@@ -42,6 +47,11 @@ class Subscription(models.Model):
         max_length=255, 
         blank=True,
         null=True,
+    )
+    subscription_type = models.CharField(
+        max_length=20,
+        choices=SUBSCRIPTION_TYPE_CHOICES,
+        default='crypto',
     )
 
     def __str__(self):

@@ -501,5 +501,42 @@ class EcommerceVideo(models.Model):
         verbose_name_plural = _('E-commerce Videos')
 
     def __str__(self):
-        return f"{self.get_status_display()} Video"
+        return f"Video"
 
+class EcommerceService(models.Model):
+    image = models.ImageField(
+        upload_to='e-commerce-service/',
+        validators=[VALIDATE_IMAGE_EXTENSION],
+        null=True,
+        blank=True,
+        verbose_name=_('Image'),
+        help_text=_('Upload your image...'),
+    )
+    title = models.CharField(
+        max_length=180,
+        validators=[MinLengthValidator(3)],
+        null=True,
+        blank=True,
+        verbose_name=_('Title'),
+        help_text=_('Enter your title...'),
+    )
+    price = models.CharField(
+        max_length=20,
+        validators=[MinLengthValidator(1)],
+        null=True,
+        blank=True,
+        verbose_name=_('Price'),
+        help_text=_('Enter your service price...'),
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created At'),
+        help_text=_('Time when this education video was created')
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+        
+    def __str__(self):
+        return f'Ecommerce service'

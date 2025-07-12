@@ -16,6 +16,7 @@ from configuration.models import (
     MarketUpdatesSubTitle,
     EcommerceVideo,
     Education,
+    EcommerceService,
 )
 
 class FooterLogoAdmin(admin.ModelAdmin):
@@ -83,3 +84,4 @@ admin.site.register(StockCommoditiesTrades, StockCommoditiesTradesAdmin)
 admin.site.register(MarketUpdates, MarketUpdatesAdmin)
 admin.site.register(Education)
 admin.site.register(EcommerceVideo)
+admin.site.register(EcommerceService)

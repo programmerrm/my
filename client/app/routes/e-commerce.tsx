@@ -1,8 +1,26 @@
 import BU from "../assets/images/সফল-Amazon-ব্যবসার-সিক্রেট.jpg"
 import LEFTIMG from "../assets/images/Lets-Grow-Together.png";
 import ULT from "../assets/images/Untitled-design-47.png";
+import { useGetEcommerceServiceQuery } from "~/redux/features/configuration/configurationApi";
+import { MEDIA_URL } from "~/utils/api";
+import { useCreateEcommerceCheckoutSessionMutation } from "~/redux/features/payments/paymentsApi";
 
 export default function Ecommerce() {
+    const { data: ecommerceService } = useGetEcommerceServiceQuery(undefined, { refetchOnMountOrArgChange: true });
+    const [createCheckoutSession, { isLoading }] = useCreateEcommerceCheckoutSessionMutation();
+    const handleEcommercePaymnet = async () => {
+        try {
+            const res = await createCheckoutSession({}).unwrap();
+            if (res.url) {
+                window.location.href = res.url;
+            } else {
+                alert("Something went wrong. No URL received.");
+            }
+        } catch (err) {
+            console.error("Payment Error:", err);
+            alert("Payment failed. Please try again.");
+        }
+    }
     return (
         <main className="bg-[#f6f6f6] pb-10">
             <section className="pt-10 lg:pt-10">
@@ -1036,15 +1054,39 @@ export default function Ecommerce() {
                         </details>
                     </div>
                     <div className="mt-5 flex items-center justify-center">
-                        <a
-                            href="#"
-                            className="bg-[#021A6B] font-medium text-2xl lg:text-3xl rounded-full px-10 py-5 text-white"
+                        <button
+                            type="button"
+                            className="bg-[#021A6B] font-medium text-2xl lg:text-3xl rounded-full px-10 py-5 text-white cursor-pointer"
+                            onClick={handleEcommercePaymnet}
                         >
                             কোর্সে জয়েন করুন
-                        </a>
+                        </button>
                     </div>
                 </div>
             </section>
+
+
+            <section className="py-8 lg:py-12">
+                <div className="max-w-screen-2xl container mx-auto px-2.5 lg:px-5 flex flex-col gap-y-5 md:gap-y-10">
+                    <h2 className="text-[#025A80] text-2xl lg:text-5xl font-semibold bg-[#E5F0FF] px-5 py-3 rounded-3xl text-center">Service Section</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-5">
+                        {ecommerceService?.map((item: any) => {
+                            return (
+                                <div className="border rounded-xl p-2.5 lg:p-4 flex flex-col items-center gap-4 cursor-pointer" key={item.id}>
+                                    <div className="flex flex-col flex-wrap w-full overflow-hidden">
+                                        <img src={`${MEDIA_URL}${item.image}`} alt={item.title} className="w-full h-auto rounded-full object-cover hover:scale-105 transition-transform duration-300" />
+                                    </div>
+                                    <div className="text-center space-y-2 grow flex flex-col items-center justify-end">
+                                        <h3 className="text-[#6EC1E4] font-medium text-xl lg:text-2xl">{item.title}</h3>
+                                        <p className="text-[#6EC1E4] text-sm lg:text-base">Price : {item.price}$</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
         </main>
     );
 }

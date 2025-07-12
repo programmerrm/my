@@ -3,7 +3,6 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.core.exceptions import ObjectDoesNotExist
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -31,7 +30,8 @@ class CreateCryptoStripeCheckoutSession(APIView):
             customer_email=request.user.email,
             metadata={
                 "user_id": request.user.id,
-                "type": "lifetime"
+                "type": "lifetime",
+                "subscription_type": "crypto"
             }
         )
         return Response({'url': checkout_session.url})
@@ -63,7 +63,8 @@ class CreateEcommerceStripeCheckoutSession(APIView):
             customer_email=request.user.email,
             metadata={
                 "user_id": request.user.id,
-                "type": "recurring"
+                "type": "recurring",
+                "subscription_type": "e-commerce"
             }
         )
         return Response({'url': checkout_session.url})

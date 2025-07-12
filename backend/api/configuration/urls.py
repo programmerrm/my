@@ -11,6 +11,8 @@ from api.configuration.views.crypto_trades import CryptoTradesView
 from api.configuration.views.stock_commodities_trades import StockCommoditiesTradesView
 from api.configuration.views.market_updates import MarketUpdatesView
 from api.configuration.views.education import EducationView
+from api.configuration.views.ecommerc_service import EcommerceServiceView
+from api.configuration.views.ecommerce_video import EcommerceVideoView
 
 urlpatterns = [
     path(
@@ -73,4 +75,14 @@ urlpatterns = [
         EducationView.as_view({ 'get': 'list' }),
         name='education',
     ),
+    path(
+        'ecommerce-service/',
+        EcommerceServiceView.as_view({ 'get': 'list' }),
+        name='ecommerce_service',
+    ),
+    path(
+        'e-commerce-video/',
+        EcommerceVideoView.as_view({ 'get': 'list' }),
+        name='ecommerce_video'
+    )
 ]

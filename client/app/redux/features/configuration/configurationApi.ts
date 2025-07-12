@@ -38,6 +38,12 @@ export const configurationApi = apiSlice.injectEndpoints({
         getEducation: builder.query({
             query: () => '/configuration/education/',
         }),
+        getEcommerceService: builder.query({
+            query: () => '/configuration/ecommerce-service/',
+        }),
+        getEcommerceVideo: builder.query({
+            query: () => '/configuration/e-commerce-video/',
+        }),
     }),
 });
 
@@ -54,4 +60,6 @@ export const {
     useGetStockCommoditiesTradesQuery,
     useGetMarketUpdatesQuery,
     useGetEducationQuery,
+    useGetEcommerceServiceQuery,
+    useGetEcommerceVideoQuery,
 } = configurationApi;
