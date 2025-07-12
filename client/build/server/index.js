@@ -9,7 +9,7 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 import { createSlice, configureStore } from "@reduxjs/toolkit";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HiMiniHome as HiMiniHome$1 } from "react-icons/hi2";
 import { IoMdEyeOff, IoMdNotifications } from "react-icons/io";
 import { MdArrowRightAlt, MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -18,6 +18,8 @@ import { FaInstagram } from "react-icons/fa";
 import { CiLinkedin } from "react-icons/ci";
 import { IoEye, IoCloseOutline } from "react-icons/io5";
 import { FaFacebook } from "react-icons/fa6";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime.js";
 import { useForm } from "react-hook-form";
 const ABORT_DELAY = 5e3;
 function handleRequest(request, responseStatusCode, responseHeaders, remixContext, loadContext) {
@@ -318,6 +320,24 @@ const configurationApi = apiSlice.injectEndpoints({
     }),
     getAbout: builder.query({
       query: () => "/configuration/about/"
+    }),
+    getCryptoTrades: builder.query({
+      query: () => "/configuration/crypto-trades/"
+    }),
+    getStockCommoditiesTrades: builder.query({
+      query: () => "/configuration/stock-commodities-trades/"
+    }),
+    getMarketUpdates: builder.query({
+      query: () => "configuration/market-updates/"
+    }),
+    getEducation: builder.query({
+      query: () => "/configuration/education/"
+    }),
+    getEcommerceService: builder.query({
+      query: () => "/configuration/ecommerce-service/"
+    }),
+    getEcommerceVideo: builder.query({
+      query: () => "/configuration/e-commerce-video/"
     })
   })
 });
@@ -329,7 +349,13 @@ const {
   useGetWhy_usQuery,
   useGetServiceQuery,
   useGetOfficialInfoQuery,
-  useGetAboutQuery
+  useGetAboutQuery,
+  useGetCryptoTradesQuery,
+  useGetStockCommoditiesTradesQuery,
+  useGetMarketUpdatesQuery,
+  useGetEducationQuery,
+  useGetEcommerceServiceQuery,
+  useGetEcommerceVideoQuery
 } = configurationApi;
 const ReactIcons = {
   HiMiniHome: HiMiniHome$1,
@@ -377,6 +403,12 @@ const NONAUTHMenu = [
     name: "e-commerce",
     path: "/e-commerce/",
     icon: void 0
+  },
+  {
+    id: 6,
+    name: "Crypto",
+    path: "/crypto/subscription/",
+    icon: void 0
   }
 ];
 const Menu = [
@@ -411,13 +443,19 @@ const Menu = [
     icon: void 0
   },
   {
-    id: 6,
+    id: 7,
+    name: "Crypto",
+    path: "/crypto/subscription/",
+    icon: void 0
+  },
+  {
+    id: 8,
     name: "subscription",
     path: "/subscription/",
     icon: void 0
   },
   {
-    id: 7,
+    id: 9,
     name: "dashboard",
     path: "/dashboard/",
     icon: void 0
@@ -599,7 +637,7 @@ const Header = () => {
       /* @__PURE__ */ jsx("nav", { className: "hidden lg:flex flex-col flex-wrap py-1.5 px-2.5 rounded-full text-white bg-section-title", children: /* @__PURE__ */ jsx("ul", { className: "flex flex-row flex-wrap items-center gap-x-2.5", children: (auth == null ? void 0 : auth.tokens) && auth.user ? renderMenuItems(Menu) : renderMenuItems(NONAUTHMenu) }) }),
       auth.tokens && auth.user ? /* @__PURE__ */ jsxs("div", { className: "hidden lg:flex flex-row flex-wrap items-center", children: [
         /* @__PURE__ */ jsx(Link, { className: "p-2.5", to: "/", children: /* @__PURE__ */ jsx(IoMdNotifications2, { className: "text-2xl" }) }),
-        /* @__PURE__ */ jsx("div", { className: "relative", children: /* @__PURE__ */ jsxs("button", { className: "py-[0.688rem] px-[2.125rem] pr-6 rounded-[1.875rem] uppercase text-white border border-purple bg-purple transition-all duration-[0.3s] flex items-center gap-2 text-base leading-normal font-normal cursor-pointer focus:bg-[#0000] xl:hover:bg-[#0000] xl:hover:border-[#8c8888] focus:border-[#8c8888] xl:hover:text-black focus:text-black xl:hover:rounded-tl-[1.875rem] focus:rounded-tl-[1.875rem] xl:hover:rounded-tr-[1.875rem] focus:rounded-tr-[1.875rem] xl:hover:rounded-bl-none focus:rounded-bl-none xl:hover:rounded-br-none focus:rounded-br-none group font-nunito", children: [
+        /* @__PURE__ */ jsx("div", { className: "relative", children: /* @__PURE__ */ jsxs("button", { className: "py-[0.688rem] px-[2.125rem] pr-6 rounded-[1.875rem] uppercase text-white border border-purple bg-purple transition-all duration-[0.3s] flex items-center text-base leading-normal font-normal cursor-pointer focus:bg-[#0000] xl:hover:bg-[#0000] xl:hover:border-[#8c8888] focus:border-[#8c8888] xl:hover:text-black focus:text-black xl:hover:rounded-tl-[1.875rem] focus:rounded-tl-[1.875rem] xl:hover:rounded-tr-[1.875rem] focus:rounded-tr-[1.875rem] xl:hover:rounded-bl-none focus:rounded-bl-none xl:hover:rounded-br-none focus:rounded-br-none group font-nunito", children: [
           (_b = auth == null ? void 0 : auth.user) == null ? void 0 : _b.name,
           /* @__PURE__ */ jsx(MdOutlineKeyboardArrowDown2, {}),
           /* @__PURE__ */ jsxs("div", { className: "bg-[#0000] border border-[#8c8888] rounded-br-[1.875rem] rounded-bl-[1.875rem] text-[#000] left-0 p-2 absolute text-center top-[2.975rem] w-full hidden group-focus:block xl:group-hover:block", children: [
@@ -622,7 +660,7 @@ const Header = () => {
             /* @__PURE__ */ jsx(
               "button",
               {
-                className: "text-section-title text-[0.688rem] w-full uppercase block hover:text-purple py-0.5",
+                className: "text-section-title text-[0.688rem] w-full uppercase block hover:text-purple py-0.5 cursor-pointer",
                 type: "button",
                 onClick: handleLogout,
                 children: "Logout"
@@ -642,7 +680,7 @@ const Header = () => {
         /* @__PURE__ */ jsx(
           Link,
           {
-            className: "py-3 px-10 border rounded-full uppercase text-white bg-gradient-to-r from-[#384ef4] to-[#b060ed] ",
+            className: "py-3 px-10 border rounded-full uppercase text-white bg-gradient-to-r from-[#384ef4] to-[#b060ed]",
             to: "/register/",
             children: "sign up"
           }
@@ -1330,6 +1368,124 @@ const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: TermsAndConditions
 }, Symbol.toStringTag, { value: "Module" }));
+const paymentsApi = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    createCryptoCheckoutSession: builder.mutation({
+      query: (data) => ({
+        url: "/payments/create-crypto-checkout-session/",
+        method: "POST",
+        body: data
+      })
+    }),
+    createEcommerceCheckoutSession: builder.mutation({
+      query: (data) => ({
+        url: "/payments/create-e-commerce-checkout-session/",
+        method: "POST",
+        body: data
+      })
+    }),
+    getSubscription: builder.query({
+      query: () => "/payments/subscription/"
+    })
+  })
+});
+const {
+  useCreateCryptoCheckoutSessionMutation,
+  useCreateEcommerceCheckoutSessionMutation,
+  useGetSubscriptionQuery
+} = paymentsApi;
+function CryptoSubscription() {
+  var _a;
+  const auth = useSelector((state) => state.auth);
+  const { data: subscriptionData } = useGetSubscriptionQuery(void 0, { refetchOnMountOrArgChange: true });
+  const [createCheckoutSession, { isLoading }] = useCreateCryptoCheckoutSessionMutation();
+  const handlePayment = async () => {
+    try {
+      const res = await createCheckoutSession({}).unwrap();
+      if (res.url) {
+        window.location.href = res.url;
+      } else {
+        alert("Something went wrong. No URL received.");
+      }
+    } catch (err) {
+      console.error("Payment Error:", err);
+      alert("Payment failed. Please try again.");
+    }
+  };
+  return /* @__PURE__ */ jsx("section", { className: "py-[4.375rem]", children: /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx("div", { className: "max-w-[62.5rem] mx-auto p-1 rounded-[1.25rem] bg-linear-[90deg,#384ef4,#b060ed]", children: /* @__PURE__ */ jsxs("div", { className: "bg-white rounded-[1.125rem] py-5 px-[0.438rem] sm:p-10", children: [
+    /* @__PURE__ */ jsx("h1", { className: "text-[1.75rem] leading-[1.2] font-semibold text-center text-title mb-[1.875rem] md:text-[2.188rem] md:mb-[2.813rem]", children: "WE ARE AN CRYPTO PLATFORM" }),
+    /* @__PURE__ */ jsxs("div", { className: "space-y-4 mb-6", children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("p", { children: "🔹 Get exclusive access to our current investments in crypto projects." }),
+        /* @__PURE__ */ jsx("p", { children: "🔹 Track our portfolio performance and see what’s working." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("p", { children: "🔍 Where We Are Going to Invest" }),
+        /* @__PURE__ */ jsx("p", { children: "🔹 Stay ahead with our future investment plans before anyone else." }),
+        /* @__PURE__ */ jsx("p", { children: "🔹 Leverage our in-depth market analysis and research-backed decisions." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("p", { children: "📊 What You Get:" }),
+        /* @__PURE__ */ jsx("p", { children: "✅ Insider insights into top crypto projects." }),
+        /* @__PURE__ */ jsx("p", { children: "✅ Real-time investment strategies from experienced traders." }),
+        /* @__PURE__ */ jsx("p", { children: "✅ Exclusive research reports on market trends and opportunities." }),
+        /* @__PURE__ */ jsx("p", { children: "✅ Community discussions and expert opinions." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("p", { children: [
+          "💳 Subscription Details: ",
+          /* @__PURE__ */ jsx("span", { className: "font-bold", children: "10$ Monthly" })
+        ] }),
+        /* @__PURE__ */ jsxs("p", { children: [
+          "🔁 Monthly Recurring Subscription – You’ll be charged automatically after ",
+          /* @__PURE__ */ jsx("span", { className: "font-bold", children: "30 Days" }),
+          " completed."
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-6", children: [
+      /* @__PURE__ */ jsx("span", { children: (_a = auth == null ? void 0 : auth.user) == null ? void 0 : _a.email }),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          className: "bg-blue-600 text-white py-2 px-6 rounded-xl hover:bg-blue-700 transition sm:text-xl cursor-pointer",
+          type: "button",
+          disabled: isLoading || (subscriptionData == null ? void 0 : subscriptionData.success),
+          onClick: () => {
+            if (!(subscriptionData == null ? void 0 : subscriptionData.success)) {
+              handlePayment();
+            }
+          },
+          children: isLoading ? "Processing..." : `${(subscriptionData == null ? void 0 : subscriptionData.subscription_type) === "crypto" && (subscriptionData == null ? void 0 : subscriptionData.success) ? "ALL READY SUBSCRIBED" : "PAY NOW"}`
+        }
+      )
+    ] })
+  ] }) }) }) });
+}
+const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: CryptoSubscription
+}, Symbol.toStringTag, { value: "Module" }));
+function PaymentSuccess() {
+  return /* @__PURE__ */ jsxs("section", { className: "min-h-screen flex flex-col justify-center items-center bg-green-50 p-6", children: [
+    /* @__PURE__ */ jsx("h1", { className: "text-4xl md:text-5xl font-bold text-green-600 mb-4", children: "✅ Payment Successful" }),
+    /* @__PURE__ */ jsx("p", { className: "text-lg md:text-xl text-green-800 max-w-md text-center", children: "Thank you for your purchase!" })
+  ] });
+}
+const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: PaymentSuccess
+}, Symbol.toStringTag, { value: "Module" }));
+function PaymentCancel() {
+  return /* @__PURE__ */ jsxs("section", { className: "min-h-screen flex flex-col justify-center items-center bg-red-50 p-6", children: [
+    /* @__PURE__ */ jsx("h1", { className: "text-4xl md:text-5xl font-bold text-red-600 mb-4", children: "❌ Payment Cancelled" }),
+    /* @__PURE__ */ jsx("p", { className: "text-lg md:text-xl text-red-800 max-w-md text-center", children: "Your payment was not completed. Please try again or contact support." })
+  ] });
+}
+const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: PaymentCancel
+}, Symbol.toStringTag, { value: "Module" }));
 function PrivacyPolicy() {
   return /* @__PURE__ */ jsx("section", { className: "pt-[3.75rem] pb-10", children: /* @__PURE__ */ jsxs("div", { className: "container", children: [
     /* @__PURE__ */ jsx(
@@ -1525,33 +1681,15 @@ function PrivacyPolicy() {
     ] })
   ] }) });
 }
-const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: PrivacyPolicy
 }, Symbol.toStringTag, { value: "Module" }));
-const paymentsApi = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    createCheckoutSession: builder.mutation({
-      query: (data) => ({
-        url: "/payments/create-checkout-session/",
-        method: "POST",
-        body: data
-      })
-    }),
-    getSubscription: builder.query({
-      query: () => "/payments/subscription/"
-    })
-  })
-});
-const {
-  useCreateCheckoutSessionMutation,
-  useGetSubscriptionQuery
-} = paymentsApi;
 function Subscription() {
   var _a;
   const auth = useSelector((state) => state.auth);
   const { data: subscriptionData } = useGetSubscriptionQuery(void 0, { refetchOnMountOrArgChange: true });
-  const [createCheckoutSession, { isLoading }] = useCreateCheckoutSessionMutation();
+  const [createCheckoutSession, { isLoading }] = useCreateCryptoCheckoutSessionMutation();
   const handlePayment = async () => {
     try {
       const res = await createCheckoutSession({}).unwrap();
@@ -1565,6 +1703,7 @@ function Subscription() {
       alert("Payment failed. Please try again.");
     }
   };
+  console.log("subscriptionData", subscriptionData);
   return /* @__PURE__ */ jsx("section", { className: "py-[4.375rem]", children: /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx("div", { className: "max-w-[62.5rem] mx-auto p-1 rounded-[1.25rem] bg-linear-[90deg,#384ef4,#b060ed]", children: /* @__PURE__ */ jsxs("div", { className: "bg-white rounded-[1.125rem] py-5 px-[0.438rem] sm:p-10", children: [
     /* @__PURE__ */ jsx("h1", { className: "text-[1.75rem] leading-[1.2] font-semibold text-center text-title mb-[1.875rem] md:text-[2.188rem] md:mb-[2.813rem]", children: "WE ARE AN EDUCATIONAL PLATFORM" }),
     /* @__PURE__ */ jsxs("div", { className: "space-y-4 mb-6", children: [
@@ -1609,13 +1748,13 @@ function Subscription() {
               handlePayment();
             }
           },
-          children: isLoading ? "Processing..." : `${(subscriptionData == null ? void 0 : subscriptionData.success) ? "ALL READY SUBSCRIBED" : "PAY NOW"}`
+          children: isLoading ? "Processing..." : `${(subscriptionData == null ? void 0 : subscriptionData.subscription_type) === "crypto" && (subscriptionData == null ? void 0 : subscriptionData.success) ? "ALL READY SUBSCRIBED" : "PAY NOW"}`
         }
       )
     ] })
   ] }) }) }) });
 }
-const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Subscription
 }, Symbol.toStringTag, { value: "Module" }));
@@ -1623,6 +1762,21 @@ const BU = "/assets/%E0%A6%B8%E0%A6%AB%E0%A6%B2-Amazon-%E0%A6%AC%E0%A7%8D%E0%A6%
 const LEFTIMG = "/assets/Lets-Grow-Together-B6CbRj7l.png";
 const ULT = "/assets/Untitled-design-47-BGHkhlWw.png";
 function Ecommerce() {
+  const { data: ecommerceService } = useGetEcommerceServiceQuery(void 0, { refetchOnMountOrArgChange: true });
+  const [createCheckoutSession, { isLoading }] = useCreateEcommerceCheckoutSessionMutation();
+  const handleEcommercePaymnet = async () => {
+    try {
+      const res = await createCheckoutSession({}).unwrap();
+      if (res.url) {
+        window.location.href = res.url;
+      } else {
+        alert("Something went wrong. No URL received.");
+      }
+    } catch (err) {
+      console.error("Payment Error:", err);
+      alert("Payment failed. Please try again.");
+    }
+  };
   return /* @__PURE__ */ jsxs("main", { className: "bg-[#f6f6f6] pb-10", children: [
     /* @__PURE__ */ jsx("section", { className: "pt-10 lg:pt-10", children: /* @__PURE__ */ jsxs("div", { className: "max-w-screen-2xl container mx-auto px-2.5 lg:px-5 flex flex-col gap-y-5", children: [
       /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("img", { className: "rounded-lg", src: BU, alt: "" }) }),
@@ -2673,224 +2827,111 @@ function Ecommerce() {
         )
       ] }),
       /* @__PURE__ */ jsx("div", { className: "mt-5 flex items-center justify-center", children: /* @__PURE__ */ jsx(
-        "a",
+        "button",
         {
-          href: "#",
-          className: "bg-[#021A6B] font-medium text-2xl lg:text-3xl rounded-full px-10 py-5 text-white",
+          type: "button",
+          className: "bg-[#021A6B] font-medium text-2xl lg:text-3xl rounded-full px-10 py-5 text-white cursor-pointer",
+          onClick: handleEcommercePaymnet,
           children: "কোর্সে জয়েন করুন"
         }
       ) })
+    ] }) }),
+    /* @__PURE__ */ jsx("section", { className: "py-8 lg:py-12", children: /* @__PURE__ */ jsxs("div", { className: "max-w-screen-2xl container mx-auto px-2.5 lg:px-5 flex flex-col gap-y-5 md:gap-y-10", children: [
+      /* @__PURE__ */ jsx("h2", { className: "text-[#025A80] text-2xl lg:text-5xl font-semibold bg-[#E5F0FF] px-5 py-3 rounded-3xl text-center", children: "Service Section" }),
+      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-5", children: ecommerceService == null ? void 0 : ecommerceService.map((item) => {
+        return /* @__PURE__ */ jsxs("div", { className: "border rounded-xl p-2.5 lg:p-4 flex flex-col items-center gap-4 cursor-pointer", children: [
+          /* @__PURE__ */ jsx("div", { className: "flex flex-col flex-wrap w-full overflow-hidden", children: /* @__PURE__ */ jsx("img", { src: `${MEDIA_URL}${item.image}`, alt: item.title, className: "w-full h-auto rounded-full object-cover hover:scale-105 transition-transform duration-300" }) }),
+          /* @__PURE__ */ jsxs("div", { className: "text-center space-y-2 grow flex flex-col items-center justify-end", children: [
+            /* @__PURE__ */ jsx("h3", { className: "text-[#6EC1E4] font-medium text-xl lg:text-2xl", children: item.title }),
+            /* @__PURE__ */ jsxs("p", { className: "text-[#6EC1E4] text-sm lg:text-base", children: [
+              "Price : ",
+              item.price,
+              "$"
+            ] })
+          ] })
+        ] }, item.id);
+      }) })
     ] }) })
   ] });
 }
-const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Ecommerce
 }, Symbol.toStringTag, { value: "Module" }));
+dayjs.extend(relativeTime);
 const MainDashboard = () => {
-  return /* @__PURE__ */ jsx("section", { className: "py-[4.375rem]", children: /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx(
-    "div",
-    {
-      className: "bg-linear-[90deg,#384ef4,#b060ed] rounded-[22px] p-1 max-w-[62.5rem] w-full mx-auto",
-      children: /* @__PURE__ */ jsxs(
+  const [activeTab, setActiveTab] = useState("crypto");
+  const [eduLevel, setEduLevel] = useState("beginner");
+  const { data: subscriptionData } = useGetSubscriptionQuery(void 0, { refetchOnMountOrArgChange: true });
+  const { data: cryptoTrades } = useGetCryptoTradesQuery(void 0, { refetchOnMountOrArgChange: true });
+  const { data: stockCommoditiesTrades } = useGetStockCommoditiesTradesQuery(void 0, { refetchOnMountOrArgChange: true });
+  const { data: marketUpdates } = useGetMarketUpdatesQuery(void 0, { refetchOnMountOrArgChange: true });
+  const { data: education } = useGetEducationQuery(void 0, { refetchOnMountOrArgChange: true });
+  const { data: ecommerceVideo } = useGetEcommerceVideoQuery(void 0, { refetchOnMountOrArgChange: true });
+  const tabButtonClass = (tab) => `text-white text-sm md:text-base py-[0.219rem] px-3 rounded-[1.563rem] font-jost font-medium cursor-pointer text-center transition-all duration-150 ease-in-out ${activeTab === tab ? "bg-linear-[90deg,#384ef4,#b060ed]" : "hover:bg-linear-[90deg,#384ef4,#b060ed]"}`;
+  const filterButtonClass = (level) => `p-1.5 rounded-[1.563rem] min-w-[6.75rem] cursor-pointer text-sm md:text-base font-medium ${eduLevel === level ? "bg-black text-white" : "bg-transparent text-black"}`;
+  const filteredEducation = education == null ? void 0 : education.filter((item) => item.status === eduLevel);
+  return /* @__PURE__ */ jsx("section", { className: "py-[4.375rem]", children: /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsxs("div", { className: "bg-linear-[90deg,#384ef4,#b060ed] rounded-[22px] p-1 max-w-[62.5rem] w-full mx-auto", children: [
+    (subscriptionData == null ? void 0 : subscriptionData.subscription_type) === "crypto" && (subscriptionData == null ? void 0 : subscriptionData.success) && /* @__PURE__ */ jsxs("div", { className: "bg-white rounded-[20px] p-5 md:p-10 md:py-[3.25rem] flex flex-col relative", children: [
+      /* @__PURE__ */ jsxs("ul", { className: "flex flex-col sm:flex-row flex-wrap items-center w-full lg:w-fit mx-auto bg-section-title rounded-[1.625rem] p-[0.438rem]", children: [
+        /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx("button", { onClick: () => setActiveTab("crypto"), className: tabButtonClass("crypto"), children: "Crypto Trades" }) }),
+        /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx("button", { onClick: () => setActiveTab("stock"), className: tabButtonClass("stock"), children: "Stock & Commodities Trades" }) }),
+        /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx("button", { onClick: () => setActiveTab("market"), className: tabButtonClass("market"), children: "Market Updates" }) }),
+        /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx("button", { onClick: () => setActiveTab("education"), className: tabButtonClass("education"), children: "Education" }) })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "my-[1.875rem] grid grid-cols-1 md:grid-cols-2 gap-4 gap-x-6", children: [
+        activeTab === "crypto" && (cryptoTrades == null ? void 0 : cryptoTrades.map((item) => /* @__PURE__ */ jsx(CardItem, { item }, item.id))),
+        activeTab === "stock" && (stockCommoditiesTrades == null ? void 0 : stockCommoditiesTrades.map((item) => /* @__PURE__ */ jsx(CardItem, { item }, item.id))),
+        activeTab === "market" && (marketUpdates == null ? void 0 : marketUpdates.map((item) => /* @__PURE__ */ jsx(CardItem, { item }, item.id))),
+        activeTab === "education" && /* @__PURE__ */ jsxs("div", { className: "my-5 p-2.5 rounded-2xl bg-[#f1f3f4] w-full col-span-full", children: [
+          /* @__PURE__ */ jsxs("div", { className: "bg-[#dadfe2] rounded-[1.563rem] p-[0.438rem] flex items-center justify-center w-fit mx-auto mb-5", children: [
+            /* @__PURE__ */ jsx("button", { onClick: () => setEduLevel("beginner"), className: filterButtonClass("beginner"), children: "Beginner" }),
+            /* @__PURE__ */ jsx("button", { onClick: () => setEduLevel("advance"), className: filterButtonClass("advance"), children: "Advance" })
+          ] }),
+          /* @__PURE__ */ jsx("div", { className: "space-y-2.5", children: filteredEducation == null ? void 0 : filteredEducation.map((item) => /* @__PURE__ */ jsx(
+            "div",
+            {
+              className: "pt-6 px-4 pb-1.5 bg-[#dadfe2] rounded-2xl relative max-w-[80%] mx-auto",
+              children: /* @__PURE__ */ jsx("div", { className: "flex flex-col flex-wrap w-full", children: /* @__PURE__ */ jsx("video", { className: "w-full h-auto rounded", src: `${MEDIA_URL}${item.video}`, controls: true }) })
+            },
+            item.id
+          )) })
+        ] })
+      ] })
+    ] }),
+    (subscriptionData == null ? void 0 : subscriptionData.subscription_type) === "e-commerce" && (subscriptionData == null ? void 0 : subscriptionData.success) && /* @__PURE__ */ jsxs("div", { className: "bg-white rounded-[20px] p-5 md:p-10 md:py-[3.25rem] flex flex-col relative", children: [
+      /* @__PURE__ */ jsx("h2", { children: "E-commerce Videos" }),
+      /* @__PURE__ */ jsx("div", { className: "my-[1.875rem] grid grid-cols-1 md:grid-cols-2 gap-4 gap-x-6", children: ecommerceVideo == null ? void 0 : ecommerceVideo.map((item) => /* @__PURE__ */ jsx("div", { className: "space-y-2.5", children: /* @__PURE__ */ jsx(
         "div",
         {
-          className: "bg-white rounded-[20px] p-5 md:p-10 md:py-[3.25rem] flex flex-col relative",
-          children: [
-            /* @__PURE__ */ jsxs(
-              "ul",
-              {
-                className: "flex flex-col sm:flex-row flex-wrap items-center w-full lg:w-fit mx-auto bg-section-title rounded-[1.625rem] p-[0.438rem]",
-                children: [
-                  /* @__PURE__ */ jsx("li", { className: "sm:flex-1/2 lg:flex-auto", children: /* @__PURE__ */ jsx(
-                    "button",
-                    {
-                      className: "text-white text-sm leading-normal md:text-base py-[0.219rem] px-3 flex items-center justify-center rounded-[1.563rem] bg-linear-[90deg,#384ef4,#b060ed] font-jost font-medium text-center",
-                      children: "Crypto Trades"
-                    }
-                  ) }),
-                  /* @__PURE__ */ jsx("li", { className: "sm:flex-1/2 lg:flex-auto", children: /* @__PURE__ */ jsx(
-                    "button",
-                    {
-                      className: "text-white text-sm leading-normal md:text-base py-[0.219rem] px-3 block rounded-[1.563rem] transition-all duration-[.15s] ease-in-out hover:bg-linear-[90deg,#384ef4,#b060ed] font-jost font-medium text-center",
-                      children: "Stock & Commodities Trades"
-                    }
-                  ) }),
-                  /* @__PURE__ */ jsx("li", { className: "sm:flex-1/2 lg:flex-auto", children: /* @__PURE__ */ jsx(
-                    "button",
-                    {
-                      className: "text-white text-sm leading-normal md:text-base py-[0.219rem] px-3 block rounded-[1.563rem] transition-all duration-[.15s] ease-in-out hover:bg-linear-[90deg,#384ef4,#b060ed] font-jost font-medium text-center",
-                      children: "Market Updates"
-                    }
-                  ) }),
-                  /* @__PURE__ */ jsx("li", { className: "sm:flex-1/2 lg:flex-auto", children: /* @__PURE__ */ jsx(
-                    "button",
-                    {
-                      className: "text-white text-sm leading-normal md:text-base py-[0.219rem] px-3 block rounded-[1.563rem] transition-all duration-[.15s] ease-in-out hover:bg-linear-[90deg,#384ef4,#b060ed] font-jost font-medium text-center",
-                      children: "Education"
-                    }
-                  ) })
-                ]
-              }
-            ),
-            /* @__PURE__ */ jsxs(
-              "div",
-              {
-                className: "my-[1.875rem] grid grid-cols-1 md:grid-cols-2 gap-4 gap-x-6",
-                children: [
-                  /* @__PURE__ */ jsxs("div", { className: "py-5 px-4 pt-10 bg-[#f5f5f5] relative", children: [
-                    /* @__PURE__ */ jsx("hr", { className: "border-t-[#c8c8c8] mb-2.5" }),
-                    /* @__PURE__ */ jsxs("div", { className: "px-1", children: [
-                      /* @__PURE__ */ jsx("p", { children: "I’m buying this (not financial advice)." }),
-                      /* @__PURE__ */ jsx("p", { children: "Exchange mexc" }),
-                      /* @__PURE__ */ jsx("p", { children: "Pair: ARB/USDT" }),
-                      /* @__PURE__ */ jsx("p", { children: "Entry: 0.3141" }),
-                      /* @__PURE__ */ jsx("p", { children: "Take Profit (TP)" }),
-                      /* @__PURE__ */ jsx("p", { children: "0.3300" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Disclaimer" }),
-                      /* @__PURE__ */ jsx("p", { children: "You are paying us to watch our exclusive content. We are not portfolio managers. We will never ask you to pay us money for investment because we are not financial advisors." })
-                    ] }),
-                    /* @__PURE__ */ jsx("div", { className: "absolute bottom-2 right-5", children: /* @__PURE__ */ jsx("p", { className: "text-xs leading-normal text-[#0000005e]", children: "17 hours ago" }) })
-                  ] }),
-                  /* @__PURE__ */ jsxs("div", { className: "py-5 px-4 pt-10 bg-[#f5f5f5] relative", children: [
-                    /* @__PURE__ */ jsx("hr", { className: "border-t-[#c8c8c8] mb-2.5" }),
-                    /* @__PURE__ */ jsxs("div", { className: "px-1", children: [
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Scalp trade" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Exchange mexc" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Pair: IMX/USDT" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Entry: 0.416" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Take Profit (TP)" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "0.44" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Disclaimer" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "You are paying us to watch our exclusive content. We are not portfolio managers. We will never ask you to pay us money for investment because we are not financial advisors." })
-                    ] }),
-                    /* @__PURE__ */ jsx("div", { className: "absolute bottom-2 right-5", children: /* @__PURE__ */ jsx("p", { className: "text-xs leading-normal text-[#0000005e]", children: "17 hours ago" }) })
-                  ] }),
-                  /* @__PURE__ */ jsxs("div", { className: "py-5 px-4 pt-10 bg-[#f5f5f5] relative", children: [
-                    /* @__PURE__ */ jsx("hr", { className: "border-t-[#c8c8c8] mb-2.5" }),
-                    /* @__PURE__ */ jsxs("div", { className: "px-1", children: [
-                      /* @__PURE__ */ jsx("p", { children: "I’m buying this (not financial advice)." }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Scalp trade" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Exchange mexc" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Pair: STX/USDT" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Entry: 0.675" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Take Profit (TP)" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "0.71" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Disclaimer" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "You are paying us to watch our exclusive content. We are not portfolio managers. We will never ask you to pay us money for investment because we are not financial advisors." })
-                    ] }),
-                    /* @__PURE__ */ jsx("div", { className: "absolute bottom-2 right-5", children: /* @__PURE__ */ jsx("p", { className: "text-xs leading-normal text-[#0000005e]", children: "17 hours ago" }) })
-                  ] }),
-                  /* @__PURE__ */ jsxs("div", { className: "py-5 px-4 pt-10 bg-[#f5f5f5] relative", children: [
-                    /* @__PURE__ */ jsx("hr", { className: "border-t-[#c8c8c8] mb-2.5" }),
-                    /* @__PURE__ */ jsxs("div", { className: "px-1", children: [
-                      /* @__PURE__ */ jsx("p", { children: "I’m buying this (not financial advice)." }),
-                      /* @__PURE__ */ jsx("p", { children: "Exchange mexc" }),
-                      /* @__PURE__ */ jsx("p", { children: "Pair: ARB/USDT" }),
-                      /* @__PURE__ */ jsx("p", { children: "Entry: 0.3141" }),
-                      /* @__PURE__ */ jsx("p", { children: "Take Profit (TP)" }),
-                      /* @__PURE__ */ jsx("p", { children: "0.3300" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Disclaimer" }),
-                      /* @__PURE__ */ jsx("p", { children: "You are paying us to watch our exclusive content. We are not portfolio managers. We will never ask you to pay us money for investment because we are not financial advisors." })
-                    ] }),
-                    /* @__PURE__ */ jsx("div", { className: "absolute bottom-2 right-5", children: /* @__PURE__ */ jsx("p", { className: "text-xs leading-normal text-[#0000005e]", children: "17 hours ago" }) })
-                  ] }),
-                  /* @__PURE__ */ jsxs("div", { className: "py-5 px-4 pt-10 bg-[#f5f5f5] relative", children: [
-                    /* @__PURE__ */ jsx(
-                      "a",
-                      {
-                        href: "#",
-                        className: "h-[18.125rem] flex items-center justify-center mb-5",
-                        children: /* @__PURE__ */ jsx("img", { src: "./src/img/order.jpeg", alt: "" })
-                      }
-                    ),
-                    /* @__PURE__ */ jsx("hr", { className: "border-t-[#c8c8c8] mb-2.5" }),
-                    /* @__PURE__ */ jsxs("div", { className: "px-1 font-bold", children: [
-                      /* @__PURE__ */ jsx("p", { children: "I’m buying this (not financial advice)." }),
-                      /* @__PURE__ */ jsx("p", { children: "Exchange mexc" }),
-                      /* @__PURE__ */ jsx("p", { children: "Pair: ARB/USDT" }),
-                      /* @__PURE__ */ jsx("p", { children: "Entry: 0.3141" }),
-                      /* @__PURE__ */ jsx("p", { children: "Take Profit (TP)" }),
-                      /* @__PURE__ */ jsx("p", { children: "0.3300" }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Disclaimer" }),
-                      /* @__PURE__ */ jsx("p", { children: "You are paying us to watch our exclusive content. We are not portfolio managers. We will never ask you to pay us money for investment because we are not financial advisors." })
-                    ] }),
-                    /* @__PURE__ */ jsx("div", { className: "absolute bottom-2 right-5", children: /* @__PURE__ */ jsx("p", { className: "text-xs leading-normal text-[#0000005e]", children: "17 hours ago" }) })
-                  ] }),
-                  /* @__PURE__ */ jsxs("div", { className: "py-5 px-4 pt-10 bg-[#f5f5f5] relative", children: [
-                    /* @__PURE__ */ jsx(
-                      "a",
-                      {
-                        href: "#",
-                        className: "h-[18.125rem] flex items-center justify-center mb-5",
-                        children: /* @__PURE__ */ jsx("img", { src: "./src/img/order.jpeg", alt: "" })
-                      }
-                    ),
-                    /* @__PURE__ */ jsx("hr", { className: "border-t-[#c8c8c8] mb-2.5" }),
-                    /* @__PURE__ */ jsxs("div", { className: "px-1", children: [
-                      /* @__PURE__ */ jsx("p", { className: "font-bold", children: "I’m buying this (not financial advice)." }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "Gold is trading around $3,339 as of today, showing mild strength in the market. The technical chart shows that price recently bounced off the $3,296 support zone and is now trying to move upward again. The 20-day moving average, currently near $3,356, is acting as a short-term resistance. If gold can break above this line and hold, the next target could be the strong resistance area near $3,370. However, if the price fails to stay above $3,296, then we might see it drop toward the next supports at $3,245 and $3,199." }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "There are concerns about the Federal Reserve’s independence after reports came out that President Trump may want to replace Fed Chair Jerome Powell . A weaker dollar makes gold cheaper for other countries to buy, which helps lift the price." }),
-                      /* @__PURE__ */ jsx("br", {}),
-                      /* @__PURE__ */ jsx("p", { children: "There’s also rising focus on upcoming U.S. inflation data. If inflation cools off more than expected, gold could rise further, possibly retesting the $3,400. Gold remains stuck between $3,296 and $3,370. A clear move above or below these levels will give a better direction. Until then, price may continue to move sideways inside this range." })
-                    ] }),
-                    /* @__PURE__ */ jsx("div", { className: "absolute bottom-2 right-5", children: /* @__PURE__ */ jsx("p", { className: "text-xs leading-normal text-[#0000005e]", children: "17 hours ago" }) })
-                  ] })
-                ]
-              }
-            )
-          ]
+          className: "pt-6 px-4 pb-1.5 bg-[#dadfe2] rounded-2xl relative w-full",
+          children: /* @__PURE__ */ jsx("div", { className: "flex flex-col flex-wrap w-full", children: /* @__PURE__ */ jsx("video", { className: "w-full h-auto rounded", src: `${MEDIA_URL}${item.video}`, controls: true }) })
         }
-      )
-    }
-  ) }) });
+      ) }, item.id)) })
+    ] })
+  ] }) }) });
+};
+const CardItem = ({ item }) => {
+  var _a;
+  return /* @__PURE__ */ jsxs("div", { className: "py-5 px-4 pt-10 bg-[#f5f5f5] relative", children: [
+    /* @__PURE__ */ jsx("hr", { className: "border-t-[#c8c8c8] mb-2.5" }),
+    item.image && /* @__PURE__ */ jsx("div", { className: "flex flex-col flex-wrap w-full", children: /* @__PURE__ */ jsx("img", { className: "w-full h-auto rounded", src: `${MEDIA_URL}${item.image}`, alt: item.title }) }),
+    item.video && /* @__PURE__ */ jsx("div", { className: "flex flex-col flex-wrap w-full", children: /* @__PURE__ */ jsx("video", { className: "w-full h-auto rounded", src: `${MEDIA_URL}${item.video}`, controls: true }) }),
+    /* @__PURE__ */ jsxs("div", { className: "px-1 space-y-1.5 mt-1.5", children: [
+      /* @__PURE__ */ jsx("p", { className: "font-semibold", children: item.title }),
+      (_a = item.sub_titles) == null ? void 0 : _a.map((sub) => /* @__PURE__ */ jsx("p", { children: sub.sub_title }, sub.id)),
+      /* @__PURE__ */ jsx("p", { children: item.description })
+    ] }),
+    /* @__PURE__ */ jsx("div", { className: "absolute bottom-2 right-5", children: /* @__PURE__ */ jsx("p", { className: "text-xs text-[#0000005e]", children: dayjs(item.created_at).fromNow() }) })
+  ] });
 };
 function Dashboard() {
   const { data: subscriptionData } = useGetSubscriptionQuery(void 0, { refetchOnMountOrArgChange: true });
   return /* @__PURE__ */ jsx(Fragment, { children: (subscriptionData == null ? void 0 : subscriptionData.success) ? /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx(MainDashboard, {}) }) : /* @__PURE__ */ jsx("section", { className: "py-[4.375rem]", children: /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx("div", { className: "bg-linear-[90deg,#384ef4,#b060ed] rounded-[22px] p-1 max-w-[62.5rem] w-full mx-auto", children: /* @__PURE__ */ jsx("div", { className: "bg-white rounded-[20px] p-5 md:p-10 md:py-[3.25rem] flex flex-col relative", children: /* @__PURE__ */ jsx("p", { className: "text-xl md:text-3xl font-bold uppercase text-center py-5", children: "This feature is only available for paid users." }) }) }) }) }) });
 }
-const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Dashboard
-}, Symbol.toStringTag, { value: "Module" }));
-const meta$3 = () => {
-  return [
-    { title: "checkout" },
-    { name: "description", content: "Welcome to Remix!" }
-  ];
-};
-function Checkout() {
-  return /* @__PURE__ */ jsx("section", { children: /* @__PURE__ */ jsx("h2", { children: "checkout" }) });
-}
-const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  default: Checkout,
-  meta: meta$3
 }, Symbol.toStringTag, { value: "Module" }));
 const Field = ({ label, children, htmlFor, error }) => {
   const getChildId = (children2) => {
@@ -2943,12 +2984,13 @@ const authApi = apiSlice.injectEndpoints({
 const { useAddRegisterMutation, useAddLoginMutation } = authApi;
 const RegisterForm = () => {
   const navigate = useNavigate();
-  const [addRegister, { isLoading, isError, isSuccess }] = useAddRegisterMutation();
+  const [addRegister, { isLoading }] = useAddRegisterMutation();
   const [isShow, setIsShow] = useState({
     password: false,
     confirm_password: false
   });
   const [hovered, setHovered] = useState(false);
+  const [publicIp, setPublicIp] = useState("");
   const {
     register,
     handleSubmit,
@@ -2956,24 +2998,21 @@ const RegisterForm = () => {
     formState: { errors }
   } = useForm();
   const { IoMdEyeOff: IoMdEyeOff2, IoEye: IoEye2 } = ReactIcons;
+  useEffect(() => {
+    fetch("https://api.ipify.org?format=json").then((res) => res.json()).then((data) => setPublicIp(data.ip)).catch(() => setPublicIp(""));
+  }, []);
   const togglePasswordVisibility = (field) => {
     setIsShow((prev) => ({ ...prev, [field]: !prev[field] }));
   };
   const onSubmitForm = async (formData) => {
-    var _a;
     try {
-      await addRegister(formData).unwrap();
+      const dataWithIp = { ...formData, local_ip: publicIp || void 0 };
+      await addRegister(dataWithIp).unwrap();
       toast.success("Registered successfully!");
       reset();
       navigate("/login/");
     } catch (err) {
-      if ((_a = err == null ? void 0 : err.data) == null ? void 0 : _a.message) {
-        toast.error(err.data.message);
-      } else if (err == null ? void 0 : err.message) {
-        toast.error(err.message);
-      } else {
-        toast.error("Something went wrong during registration.");
-      }
+      toast.error("Something went wrong during registration.");
     }
   };
   return /* @__PURE__ */ jsxs(
@@ -3146,6 +3185,7 @@ const RegisterForm = () => {
             onMouseLeave: () => setHovered(false),
             className: `text-base font-medium py-4 px-5 rounded-md uppercase transition-all duration-500 border ${hovered ? "bg-transparent text-black border-black" : "bg-gradient-to-r from-[#384ef4] to-[#b060ed] text-white"}`,
             type: "submit",
+            disabled: isLoading,
             children: isLoading ? "Submitting..." : "Submit"
           }
         ) })
@@ -3165,7 +3205,7 @@ function Register() {
     /* @__PURE__ */ jsx(RegisterForm, {})
   ] }) }) }) }) }) });
 }
-const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Register,
   meta: meta$2
@@ -3200,7 +3240,7 @@ const Banner = () => {
   const handleOpen = () => {
     dispatch(openSeeMore());
   };
-  return /* @__PURE__ */ jsx("section", { className: "relative top-0 left-0 right-0 py-5 lg:py-12 w-full", children: /* @__PURE__ */ jsx("div", { className: "max-w-screen-2xl container mx-auto px-2.5 lg:px-5 w-full", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-10 items-center justify-center w-full", children: [
+  return /* @__PURE__ */ jsx("section", { className: "py-5 lg:py-12 w-full", children: /* @__PURE__ */ jsx("div", { className: "max-w-screen-2xl container mx-auto px-2.5 lg:px-5 w-full", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-10 items-center justify-center w-full", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex flex-col flex-wrap w-full", children: [
       /* @__PURE__ */ jsx("h3", { className: "uppercase text-purple text-2xl font-semibold", children: (_a = data == null ? void 0 : data.data) == null ? void 0 : _a.sub_title }),
       /* @__PURE__ */ jsx("h1", { className: "mb-5 text-purple text-4xl lg:text-6xl font-bold mt-2.5", children: (_b = data == null ? void 0 : data.data) == null ? void 0 : _b.title }),
@@ -3343,7 +3383,7 @@ function Index() {
     /* @__PURE__ */ jsx(About, {})
   ] }) });
 }
-const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Index,
   meta: meta$1
@@ -3353,6 +3393,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const [isShow, setIsShow] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [publicIp, setPublicIp] = useState("");
   const {
     register,
     handleSubmit,
@@ -3360,9 +3401,13 @@ const LoginForm = () => {
     formState: { errors }
   } = useForm();
   const { IoEye: IoEye2, IoMdEyeOff: IoMdEyeOff2 } = ReactIcons;
+  useEffect(() => {
+    fetch("https://api.ipify.org?format=json").then((res) => res.json()).then((data) => setPublicIp(data.ip)).catch(() => setPublicIp(""));
+  }, []);
   const onSubmitForm = async (formData) => {
     try {
-      await addLogin(formData).unwrap();
+      const dataWithIp = { ...formData, local_ip: publicIp || void 0 };
+      await addLogin(dataWithIp).unwrap();
       toast.success("Login successfully");
       navigate("/");
       reset();
@@ -3381,8 +3426,8 @@ const LoginForm = () => {
       /* @__PURE__ */ jsx("button", { className: "absolute right-2 top-1/2 -translate-y-1/2", type: "button", onClick: () => setIsShow(!isShow), children: isShow ? /* @__PURE__ */ jsx(IoMdEyeOff2, { className: "text-gray-600 text-lg" }) : /* @__PURE__ */ jsx(IoEye2, { className: "text-gray-600 text-lg" }) })
     ] }) }) }),
     /* @__PURE__ */ jsxs("div", { className: "flex flex-row flex-wrap items-center justify-between w-full", children: [
-      /* @__PURE__ */ jsx(Link, { className: "!text-black/80", to: "/register/", children: "Create New Account?" }),
-      /* @__PURE__ */ jsx(Link, { className: "!text-black/80", to: "/", children: "Forget Password?" })
+      /* @__PURE__ */ jsx(Link, { className: "text-blue-600 underline", to: "/register/", children: "Create New Account?" }),
+      /* @__PURE__ */ jsx(Link, { className: "text-blue-600 underline", to: "/", children: "Forget Password?" })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "flex flex-col flex-wrap w-full", children: /* @__PURE__ */ jsx(
       "button",
@@ -3408,12 +3453,12 @@ function Login() {
     /* @__PURE__ */ jsx(LoginForm, {})
   ] }) }) }) }) }) });
 }
-const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Login,
   meta
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-CRDHeoIx.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/components-DvU-JqrC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/root-DbrMO0uS.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/components-DvU-JqrC.js", "/assets/index-CHqNmqgh.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/configurationApi-BSHg0hBS.js", "/assets/reactIcons-Dmpet-QG.js"], "css": ["/assets/root-B1c3Hf-L.css"] }, "routes/terms-and-conditions": { "id": "routes/terms-and-conditions", "parentId": "root", "path": "terms-and-conditions", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/terms-and-conditions-B7m7bkPP.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/components-DvU-JqrC.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/privacy-policy": { "id": "routes/privacy-policy", "parentId": "root", "path": "privacy-policy", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/privacy-policy-Cru2qgQw.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/components-DvU-JqrC.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/subscription": { "id": "routes/subscription", "parentId": "root", "path": "subscription", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/subscription-Dv5ulka6.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/paymentsApi-qzB651dZ.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/e-commerce": { "id": "routes/e-commerce", "parentId": "root", "path": "e-commerce", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/e-commerce-DlbIHv6G.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js"], "css": [] }, "routes/dashboard": { "id": "routes/dashboard", "parentId": "root", "path": "dashboard", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/dashboard-DkOYCFp_.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/paymentsApi-qzB651dZ.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/checkout": { "id": "routes/checkout", "parentId": "root", "path": "checkout", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/checkout-iFHJle2P.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js"], "css": [] }, "routes/register": { "id": "routes/register", "parentId": "root", "path": "register", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/register-DYni8eT6.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/authApi-q3ZIXJfh.js", "/assets/reactIcons-Dmpet-QG.js", "/assets/index-CHqNmqgh.js", "/assets/components-DvU-JqrC.js", "/assets/apiSlice-CCpCTW3O.js"], "css": [] }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_index-C18yVd-p.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/configurationApi-BSHg0hBS.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/reactIcons-Dmpet-QG.js", "/assets/components-DvU-JqrC.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/login-Cyq6jDAF.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/authApi-q3ZIXJfh.js", "/assets/reactIcons-Dmpet-QG.js", "/assets/index-CHqNmqgh.js", "/assets/components-DvU-JqrC.js", "/assets/apiSlice-CCpCTW3O.js"], "css": [] } }, "url": "/assets/manifest-e39dfe47.js", "version": "e39dfe47" };
+const serverManifest = { "entry": { "module": "/assets/entry.client-CRDHeoIx.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/components-DvU-JqrC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/root-L8wVqTFa.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/components-DvU-JqrC.js", "/assets/index-CHqNmqgh.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/popupSlice-spuH2mZ-.js", "/assets/configurationApi-DtjFL0LI.js", "/assets/reactIcons-Dmpet-QG.js"], "css": ["/assets/root-DS6YTze3.css"] }, "routes/terms-and-conditions": { "id": "routes/terms-and-conditions", "parentId": "root", "path": "terms-and-conditions", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/terms-and-conditions-B7m7bkPP.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/components-DvU-JqrC.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/crypto.subscription": { "id": "routes/crypto.subscription", "parentId": "root", "path": "crypto/subscription", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/crypto.subscription-PoChGFMq.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/paymentsApi-Clj1HOdJ.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/payment.success": { "id": "routes/payment.success", "parentId": "root", "path": "payment/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/payment.success--G2xjUV6.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js"], "css": [] }, "routes/payment.cancel": { "id": "routes/payment.cancel", "parentId": "root", "path": "payment/cancel", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/payment.cancel-C6rcxKCP.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js"], "css": [] }, "routes/privacy-policy": { "id": "routes/privacy-policy", "parentId": "root", "path": "privacy-policy", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/privacy-policy-Cru2qgQw.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/components-DvU-JqrC.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/subscription": { "id": "routes/subscription", "parentId": "root", "path": "subscription", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/subscription-DXtbWS_p.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/paymentsApi-Clj1HOdJ.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/e-commerce": { "id": "routes/e-commerce", "parentId": "root", "path": "e-commerce", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/e-commerce-wLxgi9rS.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/configurationApi-DtjFL0LI.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/paymentsApi-Clj1HOdJ.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/dashboard": { "id": "routes/dashboard", "parentId": "root", "path": "dashboard", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/dashboard-CjnVgGss.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/configurationApi-DtjFL0LI.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/paymentsApi-Clj1HOdJ.js"], "css": [] }, "routes/register": { "id": "routes/register", "parentId": "root", "path": "register", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/register-B4bO5TXM.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/authApi-q3ZIXJfh.js", "/assets/reactIcons-Dmpet-QG.js", "/assets/index-CHqNmqgh.js", "/assets/components-DvU-JqrC.js", "/assets/apiSlice-CCpCTW3O.js"], "css": [] }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_index-BEYOLcfU.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/configurationApi-DtjFL0LI.js", "/assets/apiSlice-CCpCTW3O.js", "/assets/popupSlice-spuH2mZ-.js", "/assets/reactIcons-Dmpet-QG.js", "/assets/components-DvU-JqrC.js", "/assets/index-BJYSoprK.js"], "css": [] }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/login-B_F-4RSi.js", "imports": ["/assets/jsx-runtime-0DLF9kdB.js", "/assets/index-BJYSoprK.js", "/assets/authApi-q3ZIXJfh.js", "/assets/reactIcons-Dmpet-QG.js", "/assets/index-CHqNmqgh.js", "/assets/components-DvU-JqrC.js", "/assets/apiSlice-CCpCTW3O.js"], "css": [] } }, "url": "/assets/manifest-2caa99ac.js", "version": "2caa99ac" };
 const mode = "production";
 const assetsBuildDirectory = "build\\client";
 const basename = "/";
@@ -3438,13 +3483,37 @@ const routes = {
     caseSensitive: void 0,
     module: route1
   },
+  "routes/crypto.subscription": {
+    id: "routes/crypto.subscription",
+    parentId: "root",
+    path: "crypto/subscription",
+    index: void 0,
+    caseSensitive: void 0,
+    module: route2
+  },
+  "routes/payment.success": {
+    id: "routes/payment.success",
+    parentId: "root",
+    path: "payment/success",
+    index: void 0,
+    caseSensitive: void 0,
+    module: route3
+  },
+  "routes/payment.cancel": {
+    id: "routes/payment.cancel",
+    parentId: "root",
+    path: "payment/cancel",
+    index: void 0,
+    caseSensitive: void 0,
+    module: route4
+  },
   "routes/privacy-policy": {
     id: "routes/privacy-policy",
     parentId: "root",
     path: "privacy-policy",
     index: void 0,
     caseSensitive: void 0,
-    module: route2
+    module: route5
   },
   "routes/subscription": {
     id: "routes/subscription",
@@ -3452,7 +3521,7 @@ const routes = {
     path: "subscription",
     index: void 0,
     caseSensitive: void 0,
-    module: route3
+    module: route6
   },
   "routes/e-commerce": {
     id: "routes/e-commerce",
@@ -3460,7 +3529,7 @@ const routes = {
     path: "e-commerce",
     index: void 0,
     caseSensitive: void 0,
-    module: route4
+    module: route7
   },
   "routes/dashboard": {
     id: "routes/dashboard",
@@ -3468,15 +3537,7 @@ const routes = {
     path: "dashboard",
     index: void 0,
     caseSensitive: void 0,
-    module: route5
-  },
-  "routes/checkout": {
-    id: "routes/checkout",
-    parentId: "root",
-    path: "checkout",
-    index: void 0,
-    caseSensitive: void 0,
-    module: route6
+    module: route8
   },
   "routes/register": {
     id: "routes/register",
@@ -3484,7 +3545,7 @@ const routes = {
     path: "register",
     index: void 0,
     caseSensitive: void 0,
-    module: route7
+    module: route9
   },
   "routes/_index": {
     id: "routes/_index",
@@ -3492,7 +3553,7 @@ const routes = {
     path: void 0,
     index: true,
     caseSensitive: void 0,
-    module: route8
+    module: route10
   },
   "routes/login": {
     id: "routes/login",
@@ -3500,7 +3561,7 @@ const routes = {
     path: "login",
     index: void 0,
     caseSensitive: void 0,
-    module: route9
+    module: route11
   }
 };
 export {
